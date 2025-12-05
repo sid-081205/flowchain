@@ -1,0 +1,7 @@
+spoon-ai-sdk
+neo-mamba
+elevenlabs
+websockets
+python-dotenv
+pyaudio
+webrtcvad
