@@ -1,14 +1,14 @@
-x# flowchain - Voice-Native Smart Crypto Wallet
+# flowchain - Voice-Native Smart Crypto Wallet
    
 ## 1\. Abstract
 
-**flowchain** is a non-custodial, voice-activated agentic interface for the Neo blockchain, designed to eliminate the latency and physical constraints of traditional hardware and browser-based wallets. By leveraging **SpoonOS** for secure Trusted Execution Environments (TEEs) and **ElevenLabs** for low-latency conversational I/O, VoxAegis enables hands-free high-frequency trading and acts as a fail-safe security layer.
+**flowchain** is a non-custodial, voice-activated agentic interface for the Neo blockchain, designed to eliminate the latency and physical constraints of traditional hardware and browser-based wallets. By leveraging **SpoonOS** for secure Trusted Execution Environments (TEEs) and **ElevenLabs** for low-latency conversational I/O, flowchain enables hands-free high-frequency trading and acts as a fail-safe security layer.
 
 The system introduces the concept of **"Verbal Atomic Execution"**—allowing users to trigger complex transaction batches (swaps, bridging, or emergency liquidity draining) via authenticated voice commands, secured by cryptographic proofs within the SpoonOS infrastructure.
 
 ## 2\. Problem Statement
 
-In high-volatility DeFi environments, the time-to-execution for human traders is bottlenecked by physical interface interactions (login, 2FA, clicking UI elements). Furthermore, in the event of a physical security compromise (e.g., laptop seizure) or a compromised dApp frontend, users lack an "out-of-band" method to secure their assets. VoxAegis solves this by decoupling execution from the physical device, placing the logic inside a secure, voice-gated TEE.
+In high-volatility DeFi environments, the time-to-execution for human traders is bottlenecked by physical interface interactions (login, 2FA, clicking UI elements). Furthermore, in the event of a physical security compromise (e.g., laptop seizure) or a compromised dApp frontend, users lack an "out-of-band" method to secure their assets. flowchain solves this by decoupling execution from the physical device, placing the logic inside a secure, voice-gated TEE.
 
 ## 3\. Architecture
 
@@ -68,6 +68,7 @@ A background thread within the agent continuously polls on-chain metrics and sen
 
   * **Daily Briefing:** A synthesized summary of the Neo ecosystem state.
   * **Predictive Heuristics:** The agent utilizes simple regression models to flag unusual volume spikes, proactively suggesting entry/exit points via voice before the user initiates a query.
+  * **Smart Scraping**: Based on the user's portfolio, the agent scrapes the web to find related news or signals which can maximise the user's profits or prevent losses.
 
 ### 🗣️ Hands-Free Trading
 
@@ -96,8 +97,7 @@ A background thread within the agent continuously polls on-chain metrics and sen
 1.  **Clone the Repository**
 
     ```bash
-    git clone https://github.com/your-team/vox-aegis.git
-    cd vox-aegis
+   
     ```
 
 2.  **Configure Environment**
