@@ -3,5 +3,6 @@ neo-mamba
 elevenlabs
 websockets
 python-dotenv
-pyaudio
+sounddevice
+numpy
 webrtcvad
