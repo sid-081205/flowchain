@@ -1,0 +1,10 @@
+python-dotenv
+google-generativeai
+pydantic
+openai
+anthropic
+annotated-types
+typing-extensions
+SpeechRecognition
+elevenlabs
+PyAudio

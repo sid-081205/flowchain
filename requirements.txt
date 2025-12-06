@@ -1,0 +1,8 @@
+spoon-ai-sdk
+spoon-toolkits
+env
+google-generativeai
+spoon-toolkits
+speechrecognition
+elevenlabs
+pyaudio
