@@ -1,4 +1,8 @@
 spoon-ai-sdk
-python-dotenv
+spoon-toolkits
+env
 google-generativeai
-# neo-mamba (Commented out for demo stability - uncomment to build)
+spoon-toolkits
+speechrecognition
+elevenlabs
+pyaudio

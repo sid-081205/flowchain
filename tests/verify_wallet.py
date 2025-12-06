@@ -21,12 +21,8 @@ async def verify():
 
     print(f"RPC URL: {config.NEO_RPC_URL}")
     
-    # Check if neo-mamba is real
     try:
-        import neo
-        print(f"✅ neo-mamba is installed (Real Mode)")
-    except ImportError:
-        print(f"⚠️  neo-mamba is missing (Mock Mode)")
+        # Note: The tool implementation details are inferred. 
         # config.NEO_WIF is the value, but NeoWalletTool might expect the env var NAME or the VALUE.
         # src/main.py uses private_key_env="NEO_WIF", implying it looks up the env var by name.
         if "NEO_WIF" not in os.environ:
