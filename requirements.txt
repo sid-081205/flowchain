@@ -1,0 +1,4 @@
+spoon-ai-sdk
+python-dotenv
+google-generativeai
+# neo-mamba (Commented out for demo stability - uncomment to build)
