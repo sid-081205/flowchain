@@ -1,0 +1,505 @@
+/* ==================== CSS VARIABLES ==================== */
+:root {
+    /* Colors */
+    --color-bg: #0a0a0a;
+    --color-bg-secondary: #121212;
+    --color-surface: #1a1a1a;
+    --color-surface-hover: #222222;
+    --color-primary: #ffffff;
+    --color-primary-dim: #a0a0a0;
+    --color-accent: #3b82f6;
+    --color-accent-glow: rgba(59, 130, 246, 0.3);
+    --color-success: #10b981;
+    --color-listening: #f59e0b;
+
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    --spacing-2xl: 4rem;
+
+    /* Typography */
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.5rem;
+    --font-size-2xl: 2rem;
+    --font-size-3xl: 3rem;
+
+    /* Effects */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 40px var(--color-accent-glow);
+}
+
+/* ==================== RESET & BASE ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-primary);
+    background-color: var(--color-bg);
+    color: var(--color-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* ==================== LAYOUT ==================== */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-xl);
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.container {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: var(--spacing-lg);
+    gap: var(--spacing-2xl);
+}
+
+/* ==================== HEADER & LOGO ==================== */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.logo {
+    width: 50px;
+    height: auto;
+    filter: drop-shadow(0 2px 10px rgba(255, 255, 255, 0.1));
+    transition: transform var(--transition-base), filter var(--transition-base);
+}
+
+.logo:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 4px 15px rgba(255, 255, 255, 0.2));
+}
+
+.brand-name {
+    font-size: var(--font-size-lg);
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: lowercase;
+    color: var(--color-primary);
+}
+
+/* ==================== NAVIGATION ==================== */
+.nav {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xl);
+}
+
+.nav-link {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: lowercase;
+    color: var(--color-primary-dim);
+    text-decoration: none;
+    transition: color var(--transition-base);
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--color-primary);
+    transition: width var(--transition-base);
+}
+
+.nav-link:hover {
+    color: var(--color-primary);
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* ==================== VOICE BUTTON ==================== */
+.voice-button-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.voice-button {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-bg-secondary) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.voice-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.voice-button:hover {
+    transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+}
+
+.voice-button:hover::before {
+    opacity: 1;
+}
+
+.voice-button:active {
+    transform: scale(0.98);
+}
+
+.button-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: var(--spacing-sm);
+}
+
+.mic-icon {
+    width: 48px;
+    height: 48px;
+    color: var(--color-primary);
+    transition: all var(--transition-base);
+}
+
+.voice-button:hover .mic-icon {
+    transform: translateY(-4px);
+    filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.3));
+}
+
+.button-text {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: lowercase;
+    color: var(--color-primary-dim);
+    transition: color var(--transition-base);
+}
+
+.voice-button:hover .button-text {
+    color: var(--color-primary);
+}
+
+/* ==================== BUTTON STATES ==================== */
+.voice-button.listening {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-lg), 0 0 60px var(--color-accent-glow);
+    animation: pulse 2s infinite;
+}
+
+.voice-button.listening .mic-icon {
+    color: var(--color-accent);
+    animation: micPulse 1.5s infinite;
+}
+
+.voice-button.listening .button-text {
+    color: var(--color-accent);
+}
+
+/* ==================== RIPPLE EFFECT ==================== */
+.ripple-container {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.voice-button.listening .ripple-container {
+    opacity: 1;
+}
+
+.ripple {
+    position: absolute;
+    inset: -20%;
+    border: 2px solid var(--color-accent);
+    border-radius: 50%;
+    opacity: 0;
+}
+
+.voice-button.listening .ripple {
+    animation: rippleEffect 2s infinite;
+}
+
+.voice-button.listening .ripple:nth-child(2) {
+    animation-delay: 0.7s;
+}
+
+.voice-button.listening .ripple:nth-child(3) {
+    animation-delay: 1.4s;
+}
+
+/* ==================== HINT TEXT ==================== */
+.hint-text {
+    font-size: var(--font-size-sm);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
+    color: var(--color-primary-dim);
+    opacity: 0.6;
+    transition: opacity var(--transition-base);
+}
+
+.voice-button-wrapper:hover .hint-text {
+    opacity: 1;
+}
+
+/* ==================== STATUS INDICATOR ==================== */
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    backdrop-filter: blur(10px);
+    animation: fadeInUp 1s var(--transition-base) 0.4s both;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-success);
+    box-shadow: 0 0 10px var(--color-success);
+    animation: breathe 2s infinite;
+}
+
+.status-text {
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: lowercase;
+    color: var(--color-primary-dim);
+}
+
+.status-indicator.listening .status-dot {
+    background: var(--color-listening);
+    box-shadow: 0 0 10px var(--color-listening);
+}
+
+/* ==================== PARTICLE BACKGROUND ==================== */
+#particleCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.4;
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+@keyframes micPulse {
+
+    0%,
+    100% {
+        transform: translateY(-4px) scale(1);
+    }
+
+    50% {
+        transform: translateY(-4px) scale(1.1);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rippleEffect {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+}
+
+@keyframes breathe {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .header {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .nav {
+        gap: var(--spacing-md);
+    }
+
+    .nav-link {
+        font-size: var(--font-size-xs);
+    }
+
+    .logo {
+        width: 40px;
+    }
+
+    .brand-name {
+        font-size: var(--font-size-base);
+    }
+
+    .voice-button {
+        width: 160px;
+        height: 160px;
+    }
+
+    .mic-icon {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: var(--spacing-sm);
+    }
+
+    .nav {
+        gap: var(--spacing-sm);
+    }
+
+    .container {
+        gap: var(--spacing-xl);
+    }
+
+    .logo {
+        width: 35px;
+    }
+
+    .brand-name {
+        font-size: var(--font-size-sm);
+    }
+
+    .voice-button {
+        width: 140px;
+        height: 140px;
+    }
+
+    .mic-icon {
+        width: 36px;
+        height: 36px;
+    }
+}

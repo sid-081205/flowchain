@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>preferences - flowchain</title>
+    <meta name="description"
+        content="Customize your FlowChain experience with wallet integration, risk preferences, and sentiment analysis sources.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="pages.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="index.html" class="logo-container">
+            <img src="assets/logo.png" alt="flowchain logo" class="logo">
+            <h1 class="brand-name">flowchain</h1>
+        </a>
+        <nav class="nav">
+            <a href="about.html" class="nav-link">about</a>
+            <a href="preferences.html" class="nav-link active">preferences</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="page-container">
+        <div class="page-content">
+            <h2 class="page-title">preferences</h2>
+
+            <!-- Wallet Section -->
+            <section class="preference-section">
+                <h3 class="section-title">wallet connection</h3>
+                <p class="section-description">link your cryptocurrency wallet to view current holdings and portfolio
+                    insights.</p>
+
+                <div class="wallet-card">
+                    <div class="wallet-status" id="walletStatus">
+                        <div class="status-indicator">
+                            <div class="status-dot disconnected"></div>
+                            <span class="status-label">not connected</span>
+                        </div>
+                        <button class="connect-button" id="connectWallet">connect wallet</button>
+                    </div>
+
+                    <div class="wallet-info hidden" id="walletInfo">
+                        <div class="wallet-address">
+                            <span class="label">address:</span>
+                            <span class="value" id="walletAddress">0x0000...0000</span>
+                        </div>
+                        <div class="wallet-balance">
+                            <span class="label">total balance:</span>
+                            <span class="value" id="walletBalance">$0.00</span>
+                        </div>
+                        <button class="disconnect-button" id="disconnectWallet">disconnect</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Risk Preferences -->
+            <section class="preference-section">
+                <h3 class="section-title">preferences for predictions</h3>
+                <p class="section-description">customize how flowchain generates trading predictions based on your risk
+                    tolerance.</p>
+
+                <div class="risk-card">
+                    <div class="risk-header">
+                        <span class="risk-label">risk level</span>
+                        <span class="risk-value" id="riskValue">moderate</span>
+                    </div>
+                    <div class="risk-slider-container">
+                        <input type="range" min="1" max="5" value="3" class="risk-slider" id="riskSlider">
+                        <div class="risk-labels">
+                            <span>conservative</span>
+                            <span>moderate</span>
+                            <span>aggressive</span>
+                        </div>
+                    </div>
+                    <p class="risk-description" id="riskDescription">balanced approach with moderate risk-reward ratio
+                        for steady growth.</p>
+                </div>
+            </section>
+
+            <!-- Sentiment Sources -->
+            <section class="preference-section">
+                <h3 class="section-title">sentiment analysis sources</h3>
+                <p class="section-description">select which platforms flowchain should monitor for market sentiment and
+                    predictions.</p>
+
+                <div class="sources-grid">
+                    <!-- News Sources -->
+                    <div class="source-category">
+                        <h4 class="category-title">news platforms</h4>
+
+                        <div class="source-item">
+                            <div class="source-info">
+                                <span class="source-name">coindesk</span>
+                                <span class="source-type">crypto news</span>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="source-item">
+                            <div class="source-info">
+                                <span class="source-name">cointelegraph</span>
+                                <span class="source-type">crypto news</span>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="source-item">
+                            <div class="source-info">
+                                <span class="source-name">the block</span>
+                                <span class="source-type">blockchain news</span>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="source-item">
+                            <div class="source-info">
+                                <span class="source-name">decrypt</span>
+                                <span class="source-type">web3 news</span>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Social & Analytics -->
+                    <div class="source-category">
+                        <h4 class="category-title">social & analytics</h4>
+
+                        <div class="source-item">
+                            <div class="source-info">
+                                <span class="source-name">crypto twitter</span>
+                                <span class="source-type">social sentiment</span>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="source-item">
+                            <div class="source-info">
+                                <span class="source-name">reddit (r/cryptocurrency)</span>
+                                <span class="source-type">community</span>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="source-item">
+                            <div class="source-info">
+                                <span class="source-name">glassnode</span>
+                                <span class="source-type">on-chain analytics</span>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="source-item">
+                            <div class="source-info">
+                                <span class="source-name">santiment</span>
+                                <span class="source-type">market intelligence</span>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Exchanges & Data -->
+                    <div class="source-category">
+                        <h4 class="category-title">exchanges & data</h4>
+
+                        <div class="source-item">
+                            <div class="source-info">
+                                <span class="source-name">coinmarketcap</span>
+                                <span class="source-type">market data</span>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="source-item">
+                            <div class="source-info">
+                                <span class="source-name">coingecko</span>
+                                <span class="source-type">market data</span>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="source-item">
+                            <div class="source-info">
+                                <span class="source-name">binance news</span>
+                                <span class="source-type">exchange updates</span>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="source-item">
+                            <div class="source-info">
+                                <span class="source-name">coinbase blog</span>
+                                <span class="source-type">exchange insights</span>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="save-button">save preferences</button>
+            </section>
+        </div>
+    </main>
+
+    <!-- Particle Background -->
+    <canvas id="particleCanvas"></canvas>
+
+    <script src="script.js"></script>
+    <script src="preferences.js"></script>
+</body>
+
+</html>

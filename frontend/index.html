@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>flowchain - AI Trading Voice Agent</title>
+    <meta name="description"
+        content="Experience the future of trading with flowchain's AI-powered voice agent. Intelligent, intuitive, and always ready to assist.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-container">
+            <img src="assets/logo.png" alt="flowchain logo" class="logo">
+            <h1 class="brand-name">flowchain</h1>
+        </div>
+        <nav class="nav">
+            <a href="about.html" class="nav-link">about</a>
+            <a href="preferences.html" class="nav-link">preferences</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Voice Button -->
+        <div class="voice-button-wrapper">
+            <button id="voiceButton" class="voice-button" aria-label="Start voice conversation">
+                <div class="button-content">
+                    <svg class="mic-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1Z"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M19 10V12C19 15.866 15.866 19 12 19C8.13401 19 5 15.866 5 12V10" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M12 19V23" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M8 23H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    <span class="button-text">start conversation</span>
+                </div>
+                <div class="ripple-container">
+                    <div class="ripple"></div>
+                    <div class="ripple"></div>
+                    <div class="ripple"></div>
+                </div>
+            </button>
+            <p class="hint-text">click to speak with ai agent</p>
+        </div>
+
+        <!-- Status Indicator -->
+        <div class="status-indicator" id="statusIndicator">
+            <div class="status-dot"></div>
+            <span class="status-text">ready</span>
+        </div>
+    </main>
+
+    <!-- Particle Background -->
+    <canvas id="particleCanvas"></canvas>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
