@@ -1,58 +1,96 @@
 import asyncio
+import sys
 import os
-from spoon_ai import Agent, LLM
-from spoon_toolkits.web3 import NeoWalletTool
+from dotenv import load_dotenv
+
+# Ensure project root and spoonos_components are in path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(current_dir)
+sys.path.append(project_root)
+
+
+try:
+    from spoon_ai.agents.toolcall import ToolCallAgent
+    from spoon_ai.chat import ChatBot
+    from spoon_ai.tools import ToolManager
+    from spoon_ai.tools.base import BaseTool
+except ImportError as e:
+    print(f"CRITICAL: Could not import SpoonOS components. Error: {e}")
+    sys.exit(1)
+
 from src import config
+from src.tools.neo_tool import NeoWalletTool
+
+# --- Monkeypatch ToolManager (Fix for Pydantic/SDK mismatch) ---
+original_init = ToolManager.__init__
+def patched_init(self, tools=None):
+    if tools is None or (isinstance(tools, dict) and 'name' in tools):
+        self.tools = []
+        self.tool_map = {}
+        self.indexed = False
+        return
+    return original_init(self, tools)
+ToolManager.__init__ = patched_init
+# -------------------------------------------------------------
 
 async def main():
-    print("Initializing VoxAegis Guardian Agent...")
+    print("\n🚀 Initializing FlowChain Guardian (SpoonOS)...")
 
     # 1. Setup Identity
-    # Using config.OPENAI_API_KEY implicitly or explicitly depending on SDK
-    # Assuming SDK reads from env or we pass it if needed, but the pattern shows simplistic init.
-    agent_identity = LLM(provider="openai", model="gpt-4o")
+    print(f"   - LLM: OpenAI (gpt-4o)")
+    chatbot = ChatBot(
+        llm_provider="openai",
+        model_name="gpt-4o",
+        api_key=config.OPENAI_API_KEY
+    )
 
     # 2. Define Tools
-    wallet = NeoWalletTool(
+    print(f"   - Wallet: Neo N3 ({config.NEO_RPC_URL})")
+    neo_tool = NeoWalletTool(
         rpc_url=config.NEO_RPC_URL,
-        private_key_env="NEO_WIF" # SDK expects env var name, not value
+        private_key_wif=config.NEO_WIF
     )
-
-    # 3. Create Agent
-    guardian = Agent(
-        name="VoxAegis",
-        llm=agent_identity,
-        tools=[wallet],
-        system_prompt="You are a high-frequency trading guardian. Protect assets at all costs. You are capable of executing on-chain transactions via the Neo blockchain."
-    )
-
-    print(f"Agent {guardian.name} initialized.")
-
-    # 3.5 Verification: Check Balance
-    try:
-        balance = await wallet.get_balance()
-        print(f"Current Neo Balance: {balance}")
-    except Exception as e:
-        print(f"Failed to fetch balance: {e}")
     
-    # 4. Start Proactive Loop
-    try:
-        await monitor_loop(guardian)
-    except KeyboardInterrupt:
-        print("VoxAegis shutting down...")
+    # 3. Create Agent
+    tool_manager = ToolManager([neo_tool])
+    
+    guardian = ToolCallAgent(
+        agent_name="FlowChainCore",
+        agent_description="Neo N3 Guardian Agent",
+        llm=chatbot,
+        available_tools=tool_manager,
+        system_prompt=(
+            "You are FlowChain, a secure crypto wallet guardian. "
+            "You manage a Neo N3 wallet. "
+            "You can check balances and execute transfers using the 'neo_wallet_tool'. "
+            "Always be precise with financial data. "
+            "If asked to transfer, confirm the details first."
+        )
+    )
+    print(f"✅ Agent {guardian.name} ready.\n")
 
-async def monitor_loop(agent: Agent):
-    """
-    Main event loop for the guardian.
-    """
-    print("Starting monitor loop... (Press Ctrl+C to stop)")
+    # 4. Interactive Loop
+    print("💬 Chat with FlowChain (type 'exit' to quit)")
+    print("---------------------------------------------")
+    
     while True:
-        # Placeholder for polling logic (Phase 4)
-        # Placeholder for Voice I/O (Phase 2)
-        
-        # For Phase 1, just keep alive and print heartbeat
-        # print("Heartbeat: Monitoring...")
-        await asyncio.sleep(5)
+        try:
+            user_input = input("You: ")
+            if user_input.lower() in ["exit", "quit", "q"]:
+                break
+            
+            if not user_input.strip():
+                continue
+
+            print("FlowChain:", end=" ", flush=True)
+            response = await guardian.run(user_input)
+            print(f"{response}\n")
+
+        except KeyboardInterrupt:
+            print("\nExiting...")
+            break
+        except Exception as e:
+            print(f"\n❌ Error: {e}")
 
 if __name__ == "__main__":
     asyncio.run(main())

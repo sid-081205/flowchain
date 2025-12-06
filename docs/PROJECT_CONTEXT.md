@@ -1,43 +1,44 @@
 # Project Context: FlowChain
 
 ## 1. Project Identity: "FlowChain"
-**Tagline**: "The Oracle in Your Ear."
+**FlowChain** is a voice-native, autonomous "Guardian Agent" for the Neo N3 Blockchain, secured by SpoonOS Trusted Execution Environments (TEE).
 
-**FlowChain** is a voice-native AI Financial Agent running inside a SpoonOS Trusted Execution Environment (TEE). It protects your assets and allows for hands-free management via natural language.
+**Current Development Focus**:
+The primary goal is to establish the **SpoonOS Agent Core**. This serves as the secure "Brain" that will eventually coordinate with Voice and Prediction nodes.
 
-**Scope Note**: "Prediction Market" features are handled by a teammate. This workspace focuses on **Core Wallet Infrastructure** and **SpoonOS Integration**.
+## 2. Core Architecture (Production Vision)
 
-**Hackathon Tracks**:
-1.  **AI Agent with Web3**:
-    *   **Goal**: Autonomous execution of swaps, bets, and portfolio rebalancing on Neo N3.
-2.  **ElevenLabs Challenge**:
-    *   **Goal**: A persistent audio companion that "pushes" intelligence to you.
+The system follows a Hub-and-Spoke model secured by dual TEEs.
 
-## 2. Core Architecture
-
-### A. The Brain (SpoonOS Agent)
+### A. The Brain (SpoonOS Agent) **[Active Dev]**
 - **Runtime**: Python 3.10+ (SpoonOS SDK).
-- **Responsibility**: Security, Transaction construction, and Voice Intent processing.
+- **Responsibility**: Security, Transaction construction, and Policy enforcement.
 - **Infrastructure**: SpoonOS TEE ensures Private Keys are never exposed.
 
-### B. The Voice (ElevenLabs "Sentient IOS")
-- **Input**: Streaming Audio -> WebSocket -> Intent.
-- **Output**: Dynamic Persona (Analyst/Urgent modes).
+### B. The Voice (ElevenLabs Node) **[Future Integration]**
+- **Role**: Handles WebSocket audio streams (Stt/TtS).
+- **Context**: Will eventually feed intents to the Brain via API/Socket.
 
-### C. The Hands (Turnkey & Neo)
+### C. The Quant (Prediction Engine) **[Future Integration]**
+- **Role**: Calculates "Vibe Scores" and LMSR probabilities.
+- **Context**: Will provide signals to the Brain for automated trading.
+
+### D. The Hands (Turnkey & Neo) **[Active Dev]**
 - **Signing**: Turnkey API holds the Neo Private Key.
 - **Execution**: `neo-mamba` executes swaps or interacts with Smart Contracts on Neo N3.
 
-## 3. Implementation Plan (Wallet Focus)
+## 3. Implementation Plan (SpoonOS Core)
 
-### Phase 1: Core Connectivity
-- [ ] **Wallet Setup**: Configure `NeoWalletTool` with valid Testnet keys.
-- [ ] **SpoonOS Check**: Verify the agent can successfully sign a "No-Op" or "Balance Check" transaction inside the TEE mock.
+### Phase 1: The Secure Skeleton
+- [x] Initialize `src/main.py` with `spoon-ai-sdk` (Basic).
+- [ ] **[Refactor]** Clean `src/main.py` to remove any voice placeholders.
+- [ ] **[Config]** Ensure `src/config.py` is clean and focused on Neo/Spoon credentials.
 
-### Phase 2: Basic Skills
-- [ ] **Balance Query**: User asks "How much GAS do I have?" -> Agent queries chain -> TTS response.
-- [ ] **Simple Transfer**: User asks "Send 1 GAS to Alice" -> Agent constructs & signs tx.
+### Phase 2: Wallet Connectivity
+- [ ] **Tool Setup**: Configure `NeoWalletTool` in `src/main.py`.
+- [ ] **Testnet Check**: Implement a startup routine that prints the Agent's address and GAS balance.
+- [ ] **Transaction Test**: Execute a self-transfer or simple invocation to verify TEE signing.
 
 ## 4. Security Rules
 - **Private Keys**: NEVER printed to console. Managed via `spoon_toolkits.web3`.
-- **Confirmation**: All value-transfer transactions require explicit "YES" confirmation via voice.
+- **Policy**: All transactions must be validated by the Agent's internal policy logic (even before Voice confirmation is added).

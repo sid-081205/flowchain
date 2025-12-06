@@ -1,8 +1,4 @@
 spoon-ai-sdk
-neo-mamba
-elevenlabs
-websockets
 python-dotenv
-sounddevice
-numpy
-webrtcvad
+google-generativeai
+# neo-mamba (Commented out for demo stability - uncomment to build)
