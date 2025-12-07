@@ -1,107 +1,88 @@
-# flowchain - Voice-Native Smart Crypto Wallet
+# flowchain - voice-native smart crypto wallet
    
-## 1\. Abstract
+## 1. abstract
 
-**flowchain** is a non-custodial, voice-activated agentic interface for the Neo blockchain, designed to eliminate the latency and physical constraints of traditional hardware and browser-based wallets. By leveraging **SpoonOS** for secure Trusted Execution Environments (TEEs) and **ElevenLabs** for low-latency conversational I/O, FlowChain enables hands-free high-frequency trading and acts as a fail-safe security layer.
+**flowchain** is a voice-activated agentic interface for the neo blockchain, designed to eliminate the latency and physical constraints of traditional hardware and browser-based wallets. by leveraging **spoonos** for secure trusted execution environments (tees) and **elevenlabs** for low-latency conversational i/o, flowchain enables hands-free high-frequency trading and acts as a fail-safe security layer.
 
-The system introduces the concept of **"Verbal Atomic Execution"**—allowing users to trigger complex transaction batches (swaps, bridging, or emergency liquidity draining) via authenticated voice commands, secured by cryptographic proofs within the SpoonOS infrastructure.
+the system introduces the concept of **"verbal atomic execution"**—allowing users to trigger complex transaction batches (swaps, bridging, or emergency liquidity draining) via authenticated voice commands, secured by cryptographic proofs within the spoonos infrastructure.
 
-## 2\. Problem Statement
+## 2. architecture
 
-In high-volatility DeFi environments, the time-to-execution for human traders is bottlenecked by physical interface interactions (login, 2FA, clicking UI elements). Furthermore, in the event of a physical security compromise (e.g., laptop seizure) or a compromised dApp frontend, users lack an "out-of-band" method to secure their assets. FlowChain solves this by decoupling execution from the physical device, placing the logic inside a secure, voice-gated TEE.
-
-## 3\. Architecture
-
-The system follows a hub-and-spoke architecture anchored by the **SpoonOS Agent Framework**.
+the system follows an architecture anchored by the **spoonos agent framework**.
 
 ```mermaid
 graph TD
-    User((User Voice)) -->|WebSockets| EL[ElevenLabs AI Wrapper]
-    EL -->|Intent JSON| Agent[SpoonOS Agent / TEE]
+    user((user voice)) -->|websockets| el[elevenlabs ai wrapper]
+    el -->|intent json| agent[spoonos agent / tee]
     
-    subgraph "SpoonOS TEE Layer"
-        Agent -->|1. Validate Policy| Guard[Security Guardrails]
-        Agent -->|2. Analysis| Market[Market Predicition Module]
-        Agent -->|3. Sign Tx| Signer[Turnkey Wallet API]
+    subgraph "spoonos tee layer"
+        agent -->|1. validate policy| guard[security guardrails]
+        agent -->|2. analysis| market[market prediction module]
+        agent -->|3. sign tx| signer[turnkey wallet api]
     end
     
-    Market -->|Data Feed| External[Oracle / Price APIs]
-    Signer -->|Signed Tx| Neo[Neo N3 Blockchain]
+    market -->|data feed| external[oracle / price apis]
+    signer -->|signed tx| neo[neo n3 blockchain]
 ```
 
-### Core Components
+### core components
 
-#### A. The SpoonOS Guardian (Backend)
+#### a. the spoonos guardian (backend)
 
-Built using the `spoon-ai-sdk` (Python), the agent runs inside a Trusted Execution Environment.
+built using the `spoon-ai-sdk` (python), the agent runs inside a trusted execution environment.
 
-  * **Role:** Maintains the session state and executes logic.
-  * **Security:** Utilizing SpoonOS TEEs ensures that the private key management and transaction signing logic cannot be tampered with by the host server.
-  * **Compliance:** Implements a "Policy Engine" that rejects transactions exceeding specific risk thresholds unless an explicit high-entropy voice override (Safe Word) is provided.
+  * **role:** maintains the session state and executes logic.
+  * **security:** utilizing spoonos tees ensures that the private key management and transaction signing logic cannot be tampered with by the host server.
+  * **compliance:** implements a "policy engine" that rejects transactions exceeding specific risk thresholds unless an explicit high-entropy voice override (safe word) is provided.
 
-#### B. ElevenLabs Conversational Interface (I/O)
+#### b. elevenlabs conversational interface (i/o)
 
-We utilize **ElevenLabs Conversational AI** via WebSockets for sub-200ms latency.
+we utilize **elevenlabs conversational ai** via websockets for sub-200ms latency.
 
-  * **Input:** Real-time speech-to-text streams user commands.
-  * **Output:** Dynamic text-to-speech provides execution confirmation and market summaries.
-  * **Context Awareness:** The voice model adapts its tone based on the **Market Intelligence Module**—calm during stability, urgent during volatility.
+  * **input:** real-time speech-to-text streams user commands.
+  * **output:** dynamic text-to-speech provides execution confirmation and market summaries.
+  * **context awareness:** the voice model adapts its tone based on the **market intelligence module**—calm during stability, urgent during volatility.
 
-#### C. Turnkey API & Neo Integration
+#### c. turnkey api & neo integration
 
-  * **Wallet Management:** Non-custodial key management integrated via API, allowing the SpoonOS agent to sign transactions programmatically without exposing keys to the frontend client.
-  * **Neo N3:** Native support for GAS calculation and invocation of Neo smart contracts.
+  * **wallet management:** non-custodial key management integrated via api, allowing the spoonos agent to sign transactions programmatically without exposing keys to the frontend client.
+  * **neo n3:** native support for gas calculation and invocation of neo smart contracts.
+  * **hands-free trading**
+    * *"swap 50 gas for neo at market price."*
+    * *"check my pnl for the last 24 hours."*
+    * *"what is the current apy on flamingo finance?"*
 
-## 4\. Key Features
+#### d. market prediction software
 
-### 🛡️ Emergency Killswitch (Protocol Zero)
+ * **the prediction software is detailed in greater depth in the prediction folder :)**
 
-A dedicated logic flow designed for immediate asset protection. Upon recognizing a specific distress phrase, the agent bypasses standard confirmation loops and executes an atomic batch:
+  
+## 4. technology stack
 
-1.  **Revoke:** Cancels all token approvals on known DEX routers.
-2.  **Drain:** Transfers all native NEO/GAS and NEP-17 assets to a pre-defined cold storage address.
-3.  **Lock:** Terminates the active agent session.
+  * **agent runtime:** python 3.10+, spoonos sdk
+  * **voice processing:** elevenlabs python sdk (conversational agent)
+  * **blockchain:** neo-mamba (python sdk for neo), neo n3 testnet
+  * **wallet infrastructure:** turnkey api / local tee enclave signing
 
-### 🧠 Market Intelligence & Prediction
+## 5. installation & setup
 
-A background thread within the agent continuously polls on-chain metrics and sentiment data.
+### prerequisites
 
-  * **Daily Briefing:** A synthesized summary of the Neo ecosystem state.
-  * **Predictive Heuristics:** The agent utilizes simple regression models to flag unusual volume spikes, proactively suggesting entry/exit points via voice before the user initiates a query.
+  * python 3.10+
+  * spoonos cli installed (`pip install spoon-cli`)
+  * 
 
-### 🗣️ Hands-Free Trading
+### quick start
 
-  * *"Swap 50 GAS for NEO at market price."*
-  * *"Check my PnL for the last 24 hours."*
-  * *"What is the current APY on Flamingo Finance?"*
-
-## 5\. Technology Stack
-
-  * **Agent Runtime:** Python 3.10+, SpoonOS SDK
-  * **Voice Processing:** ElevenLabs Python SDK (Conversational Agent)
-  * **Blockchain:** Neo-mamba (Python SDK for Neo), Neo N3 Testnet
-  * **Wallet Infrastructure:** Turnkey API / Local TEE Enclave signing
-
-## 6\. Installation & Setup
-
-### Prerequisites
-
-  * Python 3.10+
-  * SpoonOS CLI installed (`pip install spoon-cli`)
-  * ElevenLabs API Key
-  * Neo N3 Testnet Wallet (Private Key for Agent or API Signer)
-
-### Quick Start
-
-1.  **Clone the Repository**
+1.  **clone the repository**
 
     ```bash
     git clone https://github.com/your-team/flowchain.git
     cd flowchain
     ```
 
-2.  **Configure Environment**
-    Create a `.env` file based on `.env.example`:
+2.  **configure environment**
+    create a `.env` file based on `.env.example`:
 
     ```ini
     SPOON_API_KEY=sp_...
@@ -110,29 +91,44 @@ A background thread within the agent continuously polls on-chain metrics and sen
     COLD_STORAGE_ADDRESS=N...
     ```
 
-3.  **Initialize SpoonOS Agent**
+3.  **initialize spoonos agent**
 
     ```bash
-    # Registers the agent with the SpoonOS coordination layer
+    # registers the agent with the spoonos coordination layer
     spoon-cli init --config agent_config.json
     ```
 
-4.  **Run the Sentinel**
+4.  **run the sentinel**
 
     ```bash
     python src/main.py
     ```
 
-## 7\. Security Considerations
+## 7. security considerations
 
-  * **Voice Spoofing:** In a production environment, we would implement Voice ID verification to prevent unauthorized access via recording playback.
-  * **TEE Attestation:** We rely on SpoonOS's native remote attestation to verify the code running inside the enclave is the genuine, uncorrupted version of FlowChain.
+  * **voice spoofing:** in a production environment, we would implement voice id verification to prevent unauthorized access via recording playback.
+  * **tee attestation:** we rely on spoonos's native remote attestation to verify the code running inside the enclave is the genuine, uncorrupted version of flowchain.
 
-## 8\. Hackathon Tracks & Alignment
+## 8. hackathon tracks & alignment
 
-  * **AI Agent with Web3:** Fully autonomous agent performing on-chain writes (swaps/transfers) based on natural language reasoning.
-  * **ElevenLabs Challenge:** Deep integration of the Conversational AI websocket for low-latency command and control.
+### 🤖 ai agent for web3
+fully autonomous agent performing on-chain writes (swaps/transfers) based on natural language reasoning. the spoonos guardian maintains session state, validates policies, and executes blockchain transactions via the turnkey wallet api—all triggered by voice commands.
+
+### 📈 ai prediction track
+our prediction_model acts as an intelligent trading engine that turns messy signals—news headlines, tweets, on-chain data—into clear sentiment scores. these scores are processed through advanced financial algorithms:
+  * **black-litterman model:** blends market priors with investor views using uncertainty covariance to compute posterior expected returns.
+  * **kelly criterion:** derives optimal leverage fraction maximizing geometric growth, modified for short-selling.
+  * **risk controls:** strict drawdown constraints and max-position limits (70%) for capital preservation.
+  * **neural processing:** tensorflow/keras bidirectional lstm for macroeconomic sentiment extraction.
+
+the pipeline outputs mathematically optimized trade plans to `final_trade_plan.txt` for execution by the voice agent.
+
+### 🎙️ elevenlabs challenge
+deep integration of elevenlabs conversational ai via websockets for sub-200ms latency voice interaction. the system provides:
+  * real-time speech-to-text for user commands
+  * dynamic text-to-speech for execution confirmations and market summaries
+  * context-aware tone adaptation—calm during market stability, urgent during volatility
 
 -----
 
-*Built for the Encode Club x SpoonOS Agentic Hackathon 2025.*
+*built for the encode club x spoonos agentic hackathon 2025.*
