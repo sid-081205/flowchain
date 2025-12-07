@@ -11,6 +11,8 @@
     --color-accent-glow: rgba(59, 130, 246, 0.3);
     --color-success: #10b981;
     --color-listening: #f59e0b;
+    --color-processing: #8b5cf6;
+    --color-speaking: #10b981;
 
     /* Spacing */
     --spacing-xs: 0.5rem;
@@ -257,6 +259,38 @@ body {
     color: var(--color-accent);
 }
 
+.voice-button.processing {
+    background: linear-gradient(135deg, #4c1d95 0%, #5b21b6 100%);
+    border-color: var(--color-processing);
+    box-shadow: var(--shadow-lg), 0 0 60px rgba(139, 92, 246, 0.3);
+    animation: pulse 1.5s infinite;
+}
+
+.voice-button.processing .mic-icon {
+    color: var(--color-processing);
+    animation: spin 2s linear infinite;
+}
+
+.voice-button.processing .button-text {
+    color: var(--color-processing);
+}
+
+.voice-button.speaking {
+    background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+    border-color: var(--color-speaking);
+    box-shadow: var(--shadow-lg), 0 0 60px rgba(16, 185, 129, 0.3);
+    animation: pulse 1.2s infinite;
+}
+
+.voice-button.speaking .mic-icon {
+    color: var(--color-speaking);
+    animation: micPulse 1s infinite;
+}
+
+.voice-button.speaking .button-text {
+    color: var(--color-speaking);
+}
+
 /* ==================== RIPPLE EFFECT ==================== */
 .ripple-container {
     position: absolute;
@@ -339,6 +373,18 @@ body {
 .status-indicator.listening .status-dot {
     background: var(--color-listening);
     box-shadow: 0 0 10px var(--color-listening);
+}
+
+.status-indicator.processing .status-dot {
+    background: var(--color-processing);
+    box-shadow: 0 0 10px var(--color-processing);
+    animation: breathe 1s infinite;
+}
+
+.status-indicator.speaking .status-dot {
+    background: var(--color-speaking);
+    box-shadow: 0 0 10px var(--color-speaking);
+    animation: breathe 1.2s infinite;
 }
 
 /* ==================== PARTICLE BACKGROUND ==================== */

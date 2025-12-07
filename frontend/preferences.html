@@ -86,7 +86,7 @@
             </section>
 
             <!-- Sentiment Sources -->
-            <section class="preference-section">
+            <section class="preference-section sentiment-section">
                 <h3 class="section-title">sentiment analysis sources</h3>
                 <p class="section-description">select which platforms flowchain should monitor for market sentiment and
                     predictions.</p>
@@ -239,14 +239,32 @@
                         </div>
                     </div>
                 </div>
+            </section>
 
-                <button class="save-button">save preferences</button>
+            <!-- Passkey Section -->
+            <section class="preference-section passkey-section">
+                <h3 class="section-title">transaction passkey</h3>
+                <p class="section-description">set a passkey for implementing transactions securely.</p>
+
+                <div class="passkey-card">
+                    <div class="passkey-input-group">
+                        <label for="passkeyInput" class="passkey-label">passkey</label>
+                        <input type="text" id="passkeyInput" class="passkey-input" value="hacker" placeholder="enter passkey">
+                    </div>
+                </div>
+
+                <button type="button" class="save-button">save preferences</button>
             </section>
         </div>
     </main>
 
     <!-- Particle Background -->
     <canvas id="particleCanvas"></canvas>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <span class="toast-message">preferences saved</span>
+    </div>
 
     <script src="script.js"></script>
     <script src="preferences.js"></script>

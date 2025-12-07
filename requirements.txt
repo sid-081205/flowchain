@@ -1,8 +1,62 @@
+# Core SpoonOS SDK and Toolkits
 spoon-ai-sdk
 spoon-toolkits
-env
-google-generativeai
-spoon-toolkits
-speechrecognition
+
+# Environment and Configuration
+python-dotenv>=1.2.1
+
+# AI/LLM Providers
+google-generativeai>=0.4.0
+openai
+anthropic
+
+# Voice Processing
+SpeechRecognition
 elevenlabs
-pyaudio
+PyAudio
+
+# Data Processing and Analysis
+numpy
+pandas
+scipy
+scikit-learn>=1.4.0
+
+# Machine Learning
+tensorflow>=2.16.0
+keras>=3.0.0
+nltk>=3.8.0
+
+# Web Scraping and Data Collection
+beautifulsoup4>=4.12.0
+requests>=2.32.0
+feedparser>=6.0.10
+selenium>=4.18.0
+webdriver-manager>=4.0.1
+tavily-python>=0.7.14
+aiohttp
+
+# Visualization
+seaborn>=0.13.0
+matplotlib
+
+# Blockchain and Web3
+# Note: neo-mamba may require additional setup - install separately if needed
+# neo-mamba
+eth-account
+
+# Type Checking and Validation
+pydantic
+annotated-types
+typing-extensions
+
+# Utilities
+rich
+x402
+
+# Santiment API (for on-chain data)
+sanpy
+
+# Web Server
+fastapi
+uvicorn[standard]
+websockets

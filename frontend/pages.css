@@ -146,6 +146,15 @@
     border-bottom: none;
 }
 
+.sentiment-section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.passkey-section {
+    margin-top: 0;
+    padding-top: var(--spacing-lg);
+}
+
 .section-title {
     font-size: var(--font-size-xl);
     font-weight: 500;
@@ -493,9 +502,9 @@
 
 /* ==================== SAVE BUTTON ==================== */
 .save-button {
-    width: 100%;
-    padding: var(--spacing-md);
-    font-size: var(--font-size-base);
+    width: auto;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-size-sm);
     margin-top: var(--spacing-md);
 }
 
@@ -524,6 +533,98 @@
     .wallet-status {
         flex-direction: column;
         align-items: stretch;
+    }
+}
+
+/* ==================== PASSKEY SECTION ==================== */
+.passkey-card {
+    background: var(--color-surface);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: var(--spacing-xl);
+}
+
+.passkey-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.passkey-label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: lowercase;
+    color: var(--color-primary-dim);
+}
+
+.passkey-input {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    font-size: var(--font-size-base);
+    font-family: 'Courier New', monospace;
+    color: var(--color-primary);
+    letter-spacing: 0.1em;
+    transition: all var(--transition-base);
+    outline: none;
+}
+
+.passkey-input:focus {
+    border-color: var(--color-accent);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+}
+
+.passkey-input::placeholder {
+    color: var(--color-primary-dim);
+    opacity: 0.5;
+}
+
+/* ==================== TOAST NOTIFICATION ==================== */
+.toast {
+    position: fixed;
+    bottom: var(--spacing-xl);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-surface);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 12px;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 20px rgba(16, 185, 129, 0.2);
+    z-index: 10000;
+    animation: slideUp 0.3s ease-out;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 200px;
+}
+
+.toast.hidden {
+    display: none !important;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.toast-message {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: lowercase;
+    color: var(--color-success);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
     }
 }
 

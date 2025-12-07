@@ -96,15 +96,48 @@ if (riskSlider) {
 }
 
 // ==================== SAVE PREFERENCES ====================
-const saveButton = document.querySelector('.save-button');
+// Initialize on DOM ready
+function initSavePreferences() {
+    const saveButton = document.querySelector('.save-button') || document.querySelector('button.save-button');
+    const passkeyInput = document.getElementById('passkeyInput');
+
+// Load saved passkey status on page load
+if (passkeyInput) {
+    const savedPasskey = localStorage.getItem('flowchain_passkey');
+    if (savedPasskey) {
+        // Passkey is saved, show it in password (dotted) form
+        passkeyInput.type = 'password';
+        passkeyInput.value = savedPasskey;
+        passkeyInput.placeholder = 'passkey saved (enter new to change)';
+    } else {
+        // No passkey saved yet, show default in visible text form
+        passkeyInput.type = 'text';
+        passkeyInput.value = 'hacker';
+    }
+
+    // When user focuses on the field to edit, switch to text type so they can see what they're typing
+    passkeyInput.addEventListener('focus', () => {
+        if (passkeyInput.type === 'password') {
+            passkeyInput.type = 'text';
+        }
+    });
+}
 
 if (saveButton) {
-    saveButton.addEventListener('click', () => {
+    console.log('Save button found, attaching click handler');
+    saveButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        console.log('Save button clicked!');
+        
         // Collect all toggle states
         const toggles = document.querySelectorAll('.toggle input[type="checkbox"]');
+        
         const preferences = {
             riskLevel: riskSlider ? parseInt(riskSlider.value) : 3,
-            sources: []
+            sources: [],
+            passkey: passkeyInput ? passkeyInput.value : ''
         };
 
         toggles.forEach((toggle, index) => {
@@ -120,10 +153,28 @@ if (saveButton) {
             }
         });
 
+        // Save passkey to localStorage if provided
+        if (passkeyInput && passkeyInput.value.trim() !== '') {
+            const passkeyValue = passkeyInput.value;
+            localStorage.setItem('flowchain_passkey', passkeyValue);
+            
+            // Blur the field first
+            passkeyInput.blur();
+            
+            // Change to password type so it shows in dotted form
+            const currentValue = passkeyInput.value;
+            passkeyInput.type = 'password';
+            // Restore the value after type change
+            setTimeout(() => {
+                passkeyInput.value = currentValue;
+                passkeyInput.placeholder = 'passkey saved (enter new to change)';
+            }, 50);
+        }
+
         // TODO: Save preferences to backend
         console.log('Saving preferences:', preferences);
 
-        // Show success feedback
+        // Show success feedback on button
         const originalText = saveButton.textContent;
         saveButton.textContent = 'saved!';
         saveButton.style.background = 'var(--color-success)';
@@ -132,7 +183,46 @@ if (saveButton) {
             saveButton.textContent = originalText;
             saveButton.style.background = 'var(--color-accent)';
         }, 2000);
+
+        // Show toast notification - create it if it doesn't exist
+        let toast = document.getElementById('toast');
+        if (!toast) {
+            // Create toast if it doesn't exist
+            toast = document.createElement('div');
+            toast.id = 'toast';
+            toast.className = 'toast';
+            toast.innerHTML = '<span class="toast-message">preferences saved</span>';
+            document.body.appendChild(toast);
+        }
+        
+        // Show the toast
+        toast.classList.remove('hidden');
+        toast.style.display = 'flex';
+        toast.style.opacity = '1';
+        toast.style.visibility = 'visible';
+        toast.style.zIndex = '10000';
+        
+        console.log('Toast should be visible now');
+        
+        // Hide after 2.5 seconds
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.style.display = 'none';
+            }, 300);
+        }, 2500);
     });
+} else {
+    console.error('Save button not found!');
+}
+}
+
+// Run initialization
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSavePreferences);
+} else {
+    initSavePreferences();
 }
 
 // ==================== TOGGLE ANIMATIONS ====================
