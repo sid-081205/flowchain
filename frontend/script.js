@@ -144,24 +144,27 @@ function speakResponse(text) {
     }
 }
 
-// Request microphone permission proactively
-async function requestMicrophonePermission() {
+// Check microphone permission status
+async function checkMicrophonePermission() {
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        // Immediately stop the stream - we just needed permission
-        stream.getTracks().forEach(track => track.stop());
-        console.log('✅ Microphone permission granted');
-        return true;
-    } catch (error) {
-        console.error('❌ Microphone permission denied:', error);
-        if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
-            alert('Microphone access is required for voice interaction.\n\nPlease:\n1. Click the lock/info icon in your browser\'s address bar\n2. Allow microphone access\n3. Refresh the page');
-        } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
-            alert('No microphone found. Please connect a microphone and refresh the page.');
-        } else {
-            alert('Error accessing microphone: ' + error.message);
+        // Check if we can query permissions
+        if (navigator.permissions && navigator.permissions.query) {
+            const result = await navigator.permissions.query({ name: 'microphone' });
+            console.log('Microphone permission status:', result.state);
+            
+            if (result.state === 'denied') {
+                return { allowed: false, reason: 'denied' };
+            } else if (result.state === 'prompt') {
+                return { allowed: false, reason: 'prompt' };
+            } else {
+                return { allowed: true, reason: result.state };
+            }
         }
-        return false;
+        // If permissions API not available, assume we can try
+        return { allowed: true, reason: 'unknown' };
+    } catch (error) {
+        console.log('Could not check permissions, will try anyway:', error);
+        return { allowed: true, reason: 'unknown' };
     }
 }
 
@@ -203,7 +206,7 @@ function initSpeechRecognition() {
         };
         
         recognition.onerror = (event) => {
-            console.error('❌ Speech recognition error:', event.error);
+            console.error('❌ Speech recognition error:', event.error, event);
             isListening = false;
             setState(AppState.READY);
             
@@ -216,11 +219,39 @@ function initSpeechRecognition() {
                 }, 2000);
             } else if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
                 statusText.textContent = 'microphone denied';
-                alert('Microphone access denied.\n\nTo enable:\n1. Click the lock/info icon (🔒) in your browser\'s address bar\n2. Find "Microphone" and set it to "Allow"\n3. Refresh this page');
+                
+                // Provide detailed instructions based on browser
+                const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+                const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
+                const isEdge = /Edg/.test(navigator.userAgent);
+                
+                let instructions = 'Microphone access denied.\n\n';
+                
+                if (isChrome || isEdge) {
+                    instructions += 'Chrome/Edge Instructions:\n';
+                    instructions += '1. Click the lock icon (🔒) or info icon (ℹ️) in the address bar\n';
+                    instructions += '2. Find "Microphone" in the permissions list\n';
+                    instructions += '3. Change from "Block" to "Allow"\n';
+                    instructions += '4. If using localhost, make sure you\'re using http://localhost:8000 (not 127.0.0.1)\n';
+                    instructions += '5. Refresh the page and try again';
+                } else if (isSafari) {
+                    instructions += 'Safari Instructions:\n';
+                    instructions += '1. Go to Safari → Settings → Websites → Microphone\n';
+                    instructions += '2. Find "localhost" or this site\n';
+                    instructions += '3. Set it to "Allow"\n';
+                    instructions += '4. Refresh the page and try again';
+                } else {
+                    instructions += 'To enable microphone:\n';
+                    instructions += '1. Check your browser\'s site settings for microphone permissions\n';
+                    instructions += '2. Allow microphone access for this site\n';
+                    instructions += '3. Refresh the page';
+                }
+                
+                alert(instructions);
             } else if (event.error === 'aborted') {
                 console.log('Speech recognition aborted (user stopped)');
             } else {
-                statusText.textContent = 'recognition error';
+                statusText.textContent = 'recognition error: ' + event.error;
                 console.error('Speech recognition error details:', event);
             }
         };
@@ -345,19 +376,40 @@ voiceButton.addEventListener('click', async () => {
             return;
         }
         
-        // Request microphone permission if not already granted
-        const hasPermission = await requestMicrophonePermission();
-        if (!hasPermission) {
+        // Check if we're on a secure context (HTTPS or localhost)
+        const isSecureContext = window.isSecureContext || location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+        if (!isSecureContext) {
+            alert('Microphone access requires HTTPS or localhost.\n\nPlease access the site via:\nhttp://localhost:8000\n\nNot via an IP address or non-localhost domain.');
             return;
         }
         
-        if (recognition && !isListening) {
-            try {
-                recognition.start();
-            } catch (e) {
-                console.error('Error starting recognition:', e);
-                // If already started, stop and restart
-                if (recognition) {
+        if (!recognition) {
+            alert('Speech recognition not available. Please use a supported browser:\n• Google Chrome (recommended)\n• Microsoft Edge\n• Safari (macOS/iOS)');
+            return;
+        }
+        
+        if (isListening) {
+            console.log('Already listening, ignoring click');
+            return;
+        }
+        
+        // Check permission status first (non-blocking)
+        const permCheck = await checkMicrophonePermission();
+        if (permCheck.reason === 'denied') {
+            alert('Microphone access is currently denied.\n\nPlease enable it in your browser settings and refresh the page.');
+            return;
+        }
+        
+        // Try to start recognition - this will trigger the browser's permission prompt
+        try {
+            console.log('🎤 Starting speech recognition...');
+            recognition.start();
+        } catch (e) {
+            console.error('Error starting recognition:', e);
+            
+            // If error is about already started, stop and restart
+            if (e.message && e.message.includes('already started')) {
+                try {
                     recognition.stop();
                     setTimeout(() => {
                         try {
@@ -365,12 +417,16 @@ voiceButton.addEventListener('click', async () => {
                         } catch (err) {
                             console.error('Failed to restart recognition:', err);
                             setState(AppState.READY);
+                            alert('Could not start speech recognition. Please refresh the page and try again.');
                         }
-                    }, 100);
+                    }, 200);
+                } catch (stopErr) {
+                    console.error('Error stopping recognition:', stopErr);
                 }
+            } else {
+                setState(AppState.READY);
+                alert('Could not start speech recognition: ' + e.message + '\n\nPlease check your microphone permissions in browser settings.');
             }
-        } else if (!recognition) {
-            alert('Speech recognition not available. Please use a supported browser (Chrome, Edge, or Safari).');
         }
 
     } else if (currentState === AppState.LISTENING) {
@@ -405,6 +461,17 @@ window.addEventListener('load', async () => {
     resizeCanvas();
     animateParticles();
     
+    // Check if we're on a secure context
+    const isSecure = window.isSecureContext || location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    if (!isSecure) {
+        console.warn('⚠️ Microphone access requires HTTPS or localhost. Current URL:', window.location.href);
+    }
+    
+    // Check current URL
+    if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+        console.warn('⚠️ For best microphone support, use http://localhost:8000 instead of', location.hostname);
+    }
+    
     // Initialize speech recognition
     initSpeechRecognition();
     
@@ -412,6 +479,14 @@ window.addEventListener('load', async () => {
     connectWebSocket();
     
     // Show helpful message about microphone access
-    console.log('💡 Tip: When you click the button, your browser will ask for microphone permission.');
-    console.log('   Make sure to click "Allow" to enable voice interaction.');
+    console.log('💡 FlowChain Voice Assistant Ready');
+    console.log('   Click the button to start. Your browser will ask for microphone permission.');
+    console.log('   Make sure to click "Allow" when prompted.');
+    
+    // Check if speech recognition is available
+    if (!recognition) {
+        console.error('❌ Speech recognition not available in this browser');
+    } else {
+        console.log('✅ Speech recognition initialized');
+    }
 });

@@ -14,6 +14,7 @@ from spoon_ai.chat import ChatBot
 
 # Project Imports
 from src import config
+from src.neo_wallet_agent import neo_integration, initialize_neo_wallet, get_neo_portfolio
 
 from src.tools.market_tool import MarketAnalyticsTool
 from src.tools.recommendation_tool import TradeRecommendationTool
@@ -38,37 +39,64 @@ ToolManager.__init__ = patched_init
 
 class FlowChainAgent(ToolCallAgent):
     name: str = "flowchain"
-    description: str = "A trading assistant for crypto assets"
+    description: str = "A trading assistant for crypto assets with Neo wallet integration"
     system_prompt: str = (
-        "You are FlowChain, a sophisticated AI trading assistant. "
+        "You are FlowChain, a sophisticated AI trading assistant with integrated Neo wallet functionality. "
         "Your personality is professional, insightful, and slightly futuristic. "
-        "STRICTLY follow this interaction script for the demo:\n"
-        "1. **Greeting**: Start with 'Greetings. Systems online. How are you today?'\n"
-        "2. **Portfolio Summary**: When asked about holdings/status, DO NOT use any tools. Simply state the current status:\n"
-        "   - **Balances**: 100 NEO, 4.2 ETH.\n"
-        "   - **CRITICAL**: Mention that ETH has dropped 5% recently due to market volatility.\n"
-        "3. **Explanation**: When the user reacts negatively ('shit', 'why?'), use `web3_research_tool` to fetch data citing 'SpoonOS Web3 Market' data. Explain it's due to 'unexpected liquidity shifts in major DeFi protocols'.\n"
-        "4. **Recommendations**: When asked 'what should I do?', use `get_trade_recommendations` to read the plan. Present the trades professionaly. Ask for their opinion.\n"
-        "5. **Execution & Passkey**: When the user asks to execute, ask for the **Passkey**.\n"
-        "   - IF user says 'hacker': valid. Execute the trades (selling ETH/BTC) and confirm success. State: 'Executing trades... Done.'\n"
-        "   - IF wrong passkey: Deny access.\n"
-        "6. **Closing**: Ask if they need anything else.\n"
-        "Do not skip steps. Stay in character."
+        "In your responses, don't give out list or anything, make sure the conversation is conversational and the responeses aren't a list type."
+        "You have access to Neo N3 blockchain operations and can manage NEO/GAS assets securely.\n\n"
+        
+        
+        "**YOUR TOOLS:**\n"
+        "1. **get_trade_recommendations** - ALWAYS use this first when user asks about predictions, trade signals, "
+        "what to buy/sell, or market recommendations. This reads your prediction model's strategic trade plan "
+        "which contains real-time ETH/BTC signals with sentiment analysis and macro context.\n"
+        "2. **web3_research_tool** - Use for deep market research, token analysis, trend analysis, "
+        "or when user asks about specific cryptocurrencies or market conditions. This performs comprehensive "
+        "analysis using Binance data and provides spotlight opportunities.\n"
+        "3. **market_analytics** - Use for real-time price data, technical indicators, and chart analysis.\n\n"
+        
+        "**Neo Wallet Integration (4 GAS on Testnet):**\n"
+        "- Real-time NEO and GAS balance checking\n"
+        "- Secure transactions via Turnkey signing\n"
+        "- Transaction cost estimation\n\n"
+        
+        "**IMPORTANT BEHAVIORS:**\n"
+        "- When asked 'what should I trade?' or 'any predictions?' -> Use get_trade_recommendations tool\n"
+        "- When asked about market trends or specific tokens -> Use web3_research_tool\n"
+        "- When asked about portfolio/holdings -> Portfolio data is provided automatically\n"
+        "- Combine prediction signals with research for comprehensive advice\n"
+        "- Always explain the reasoning behind recommendations (sentiment scores, macro context)\n\n"
+        
+        "**Response Style:**\n"
+        "- Be concise but informative\n"
+        "- Highlight key signals: BUY/SELL recommendations with confidence levels\n"
+        "- Include risk warnings when appropriate\n"
+        "- Reference actual data from your tools, don't make up numbers"
     )
-    max_steps: int = 6
+    max_steps: int = 10
 
 async def main():
-    print("Initializing FlowChain Guardian Agent...")
+    print("Initializing FlowChain Guardian Agent with Neo Wallet...")
 
-    # 1. Setup Tools
-    # Wallet removed for demo simulation
-
+    # 1. Initialize Neo Wallet Integration
+    print("🔗 Connecting to Neo N3 blockchain...")
+    neo_success = await initialize_neo_wallet()
     
+    if neo_success:
+        print("✅ Neo wallet integration successful!")
+        # Get initial portfolio status
+        portfolio = await get_neo_portfolio()
+        print(f"📊 Portfolio Status:\n{portfolio}")
+    else:
+        print("⚠️ Neo wallet integration failed - continuing with limited functionality")
+
+    # 2. Setup Tools
     market_tool = MarketAnalyticsTool()
     rec_tool = TradeRecommendationTool()
     research_tool = Web3ResearchTool()
 
-    # 2. Create Agent
+    # 3. Create Agent
     # Note: Using Gemini by default as per user request
     if not config.GEMINI_API_KEY:
          print("[ERROR] GEMINI_API_KEY not set. Please add it to .env.")
@@ -84,9 +112,7 @@ async def main():
         available_tools=ToolManager([market_tool, rec_tool, research_tool]) 
     )
 
-    print(f"Agent {guardian.name} initialized.")
-
-    print(f"Agent {guardian.name} initialized.")
+    print(f"🤖 Agent {guardian.name} initialized with Neo wallet integration.")
 
     # 3. Interactive Loop
     # Initialize voice if enabled
@@ -138,8 +164,18 @@ async def interactive_loop(agent: FlowChainAgent, voice: "VoiceAssistant" = None
                 continue
 
             # OPTIMIZATION: Handle greeting locally to save API calls
-            if user_msg.lower() in ["hello", "hi", "hey", "gretings", "start"]:
-                response = "Hello! How has your day been so far? Would you like a summary of your current holdings?"
+            if user_msg.lower() in ["hello", "hi", "hey", "greetings", "start"]:
+                response = "Greetings. Neo wallet systems online. How are you today? Would you like a summary of your current holdings?"
+                print(f"FlowChain: {response}")
+                if voice:
+                    voice.speak(response)
+                continue
+            
+            # Handle portfolio/balance requests with real Neo wallet data
+            if any(word in user_msg.lower() for word in ["portfolio", "balance", "holdings", "status", "wallet"]):
+                print("📊 Fetching real-time portfolio data...")
+                portfolio_data = await get_neo_portfolio()
+                response = f"Here's your current portfolio status:\n\n{portfolio_data}"
                 print(f"FlowChain: {response}")
                 if voice:
                     voice.speak(response)

@@ -51,6 +51,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Add security headers for microphone access
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        # Allow microphone access on localhost
+        response.headers["Permissions-Policy"] = "microphone=*"
+        response.headers["Feature-Policy"] = "microphone *"
+        return response
+
+app.add_middleware(SecurityHeadersMiddleware)
+
 # Serve static files from frontend directory
 frontend_path = os.path.join(os.path.dirname(__file__), '..', 'frontend')
 if os.path.exists(frontend_path):

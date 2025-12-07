@@ -3,7 +3,12 @@ from spoon_ai.tools.base import BaseTool
 
 class TradeRecommendationTool(BaseTool):
     name: str = "get_trade_recommendations"
-    description: str = "Retrieves the latest strategic trade recommendations and market analysis from the prediction model."
+    description: str = (
+        "Retrieves the latest strategic trade recommendations from the prediction model. "
+        "Use this tool when the user asks about: trade signals, predictions, what to buy/sell, "
+        "market recommendations, ETH signals, BTC signals, or trading advice. "
+        "Returns sentiment-based BUY/SELL signals with macro context analysis."
+    )
     
     parameters: dict = {
         "type": "object",
@@ -11,7 +16,7 @@ class TradeRecommendationTool(BaseTool):
         "required": []
     }
 
-    def execute(self):
+    async def execute(self):
         """
         Reads the final_trade_plan.txt file and returns its content.
         """
@@ -27,6 +32,8 @@ class TradeRecommendationTool(BaseTool):
                 
             with open(plan_path, "r") as f:
                 content = f.read()
-            return content
+            
+            # Add a helpful header for the agent
+            return f"📈 **Current Trade Predictions:**\n\n{content}\n\n💡 *Interpret these signals considering current market conditions and your risk tolerance.*"
         except Exception as e:
             return f"Error reading trade plan: {str(e)}"
