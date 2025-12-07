@@ -76,8 +76,13 @@ class NeoWalletTool(BaseTool):
         if self._is_mock:
             print("[NeoWalletTool] ⚠️  MOCK MODE ACTIVE. No real blockchain connection.")
             print("[NeoWalletTool] Using in-memory stateful mock wallet.")
-            # Initialize Mock Balances
-            self._mock_balances = {"NEO": 100, "GAS": 520.5}
+            # Initialize Mock Balances from file or default
+            try:
+                import json
+                with open("mock_wallet.json", "r") as f:
+                    self._mock_balances = json.load(f)
+            except Exception:
+                self._mock_balances = {"NEO": 100, "GAS": 520.5, "ETH": 4.2}
         elif private_key_wif:
             print(f"[NeoWalletTool] Initialized with WIF (Length: {len(private_key_wif)})")
         else:

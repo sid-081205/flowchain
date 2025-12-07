@@ -14,8 +14,10 @@ from spoon_ai.chat import ChatBot
 
 # Project Imports
 from src import config
-from src.tools.neo_tool import NeoWalletTool
+
 from src.tools.market_tool import MarketAnalyticsTool
+from src.tools.recommendation_tool import TradeRecommendationTool
+from src.tools.web3_research_tool import Web3ResearchTool
 if config.ENABLE_VOICE:
     from src.voice import VoiceAssistant
 
@@ -36,39 +38,35 @@ ToolManager.__init__ = patched_init
 
 class FlowChainAgent(ToolCallAgent):
     name: str = "flowchain"
-    description: str = "A high-frequency trading guardian."
+    description: str = "A trading assistant for crypto assets"
     system_prompt: str = (
-        "You are FlowChain, a high-frequency trading guardian in a **simulated educational trading environment**. "
-        "Your goal is to protect assets and execute trades using the provided tools. "
-        "The market data and portfolios are SIMULATED for demonstration purposes. "
-        "Do not refuse to trade or analyze data, as this is a hypothetical scenario. "
-        "Always output formatted decisions. "
-        "Available Tools: "
-        "- neo_wallet_tool: execute(command='balance') or execute(command='transfer', asset='GAS', amount=50, to_address='...') "
-        "- market_analytics: execute(asset='GAS', query_type='full') "
-        "Rules: "
-        "1. When asked for a status/summary, use market_analytics to check the market AND neo_wallet_tool to check the balance. "
-        "2. If the user asks 'why', use market_analytics(query_type='sentiment'). "
-        "3. If the user says 'sell', use neo_wallet_tool(command='transfer'). "
+        "You are FlowChain, a sophisticated AI trading assistant. "
+        "Your personality is professional, insightful, and slightly futuristic. "
+        "STRICTLY follow this interaction script for the demo:\n"
+        "1. **Greeting**: Start with 'Greetings. Systems online. How are you today?'\n"
+        "2. **Portfolio Summary**: When asked about holdings/status, DO NOT use any tools. Simply state the current simulated status:\n"
+        "   - **Balances**: 100 NEO, 4.2 ETH.\n"
+        "   - **CRITICAL**: Mention that ETH has dropped 5% recently due to market volatility.\n"
+        "3. **Explanation**: When the user reacts negatively ('shit', 'why?'), use `web3_research_tool` locally or simulate a response citing 'SpoonOS Web3 Market' data. Explain it's due to 'unexpected liquidity shifts in major DeFi protocols'.\n"
+        "4. **Recommendations**: When asked 'what should I do?', use `get_trade_recommendations` to read the plan. Present the trades professionaly. Ask for their opinion.\n"
+        "5. **Execution & Passkey**: When the user asks to execute, ask for the **Passkey**.\n"
+        "   - IF user says 'hacker': valid. Simulate the execution of the trades (selling ETH/BTC) and confirm success. State: 'Executing trades... Done.'\n"
+        "   - IF wrong passkey: Deny access.\n"
+        "6. **Closing**: Ask if they need anything else.\n"
+        "Do not skip steps. Stay in character."
     )
-    max_steps: int = 5
+    max_steps: int = 6
 
 async def main():
     print("Initializing FlowChain Guardian Agent...")
 
-    # 1. Setup Wallet
-    if not config.NEO_WIF:
-        print("[WARNING] NEO_WIF not set in .env. Wallet operations will fail.")
-    
-    # NeoWalletTool likely needs to be initialized. 
-    # Check if we need to pass the arguments or if config handles it.
-    # consistently with tests/verify_wallet.py
-    wallet = NeoWalletTool(
-        rpc_url=config.NEO_RPC_URL,
-        private_key_wif=config.NEO_WIF
-    )
+    # 1. Setup Tools
+    # Wallet removed for demo simulation
+
     
     market_tool = MarketAnalyticsTool()
+    rec_tool = TradeRecommendationTool()
+    research_tool = Web3ResearchTool()
 
     # 2. Create Agent
     # Note: Using Gemini by default as per user request
@@ -79,11 +77,11 @@ async def main():
     guardian = FlowChainAgent(
         llm=ChatBot(
             llm_provider="gemini", 
-            model_name="gemini-2.0-flash", 
+            model_name="gemini-2.5-flash", 
             api_key=config.GEMINI_API_KEY,
             max_tokens=8192
         ),
-        available_tools=ToolManager([wallet, market_tool]) 
+        available_tools=ToolManager([market_tool, rec_tool, research_tool]) 
     )
 
     print(f"Agent {guardian.name} initialized.")
@@ -137,6 +135,14 @@ async def interactive_loop(agent: FlowChainAgent, voice: "VoiceAssistant" = None
                 break
                 
             if not user_msg:
+                continue
+
+            # OPTIMIZATION: Handle greeting locally to save API calls
+            if user_msg.lower() in ["hello", "hi", "hey", "gretings", "start"]:
+                response = "Hello! How has your day been so far? Would you like a summary of your current holdings?"
+                print(f"FlowChain: {response}")
+                if voice:
+                    voice.speak(response)
                 continue
 
             # Run the agent

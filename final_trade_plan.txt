@@ -1,0 +1,13 @@
+STRATEGIC TRADE PLAN
+Generated: 2025-12-07 00:05:21
+Risk Profile: HIGH | Macro Sentinel: 0.0
+============================================================
+
+[ETH] SELL/SHORT $-177.91 (0.0%)
+   Quantity: -0.0586 ETH
+   Reason: Sentiment Score -2 with 5 mentions. Macro context is Bearish (0.0).
+----------------------------------------
+[BTC] SELL/SHORT $-3,000.00 (0.0%)
+   Quantity: -0.0336 BTC
+   Reason: Sentiment Score -4 with 18 mentions. Macro context is Bearish (0.0).
+----------------------------------------

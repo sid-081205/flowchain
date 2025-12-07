@@ -1,0 +1,102 @@
+CRYPTO MARKET SIGNAL REPORT
+Generated: 2025-12-06 23:36:58
+============================================================
+
+--- MARKET NEWS ANALYSIS ---
+[CoinDesk] State of Crypto: Wrapping Up the Month
+   Sentiment: NEUTRAL -> Action: WATCH
+----------------------------------------
+[CoinDesk] French Banking Giant BPCE to Roll Out Crypto Trading for 2M Retail Clients
+   Sentiment: BEARISH -> Action: CONSIDER SHORT
+----------------------------------------
+[CoinDesk] Two Casascius Coins Holding 2K BTC Moved After 13 Years of Inactivity
+   Sentiment: NEUTRAL -> Action: WATCH
+----------------------------------------
+[CoinDesk] Coinbase Sees Crypto Recovery Ahead as Liquidity Improves and Fed Rate Cut Odds Climb
+   Sentiment: NEUTRAL -> Action: WATCH
+----------------------------------------
+[CoinDesk] How Much Longer Until We Consider the Bitcoin Power Law Model Invalid?
+   Sentiment: NEUTRAL -> Action: WATCH
+----------------------------------------
+[CoinTelegraph] BitMine buys $199M in Ether as smart money traders bet on ETH decline
+   Sentiment: BULLISH -> Action: CONSIDER LONG
+----------------------------------------
+[CoinTelegraph] Here’s what happened in crypto today
+   Sentiment: NEUTRAL -> Action: WATCH
+----------------------------------------
+[CoinTelegraph] ‘European SEC’ proposal sparks licensing concerns, institutional ambitions
+   Sentiment: NEUTRAL -> Action: WATCH
+----------------------------------------
+[CoinTelegraph] Bitcoin profit metric eyes 2-year lows in 'complete reset:' BTC analysis
+   Sentiment: BEARISH -> Action: CONSIDER SHORT
+----------------------------------------
+[CoinTelegraph] BTC poised for December recovery on ‘macro tailwinds,' Fed rate cut: Coinbase
+   Sentiment: BEARISH -> Action: CONSIDER SHORT
+----------------------------------------
+[The Block] Jupiter exec acknowledges ‘zero contagion’ claim was ‘not 100% correct’ after backlash over vault design
+   Sentiment: NEUTRAL -> Action: WATCH
+----------------------------------------
+[The Block] Poland becomes EU’s lone MiCA holdout after parliament fails to overturn veto on crypto bill
+   Sentiment: BEARISH -> Action: CONSIDER SHORT
+----------------------------------------
+[The Block] MetaMask moves into prediction markets with Polymarket integration
+   Sentiment: NEUTRAL -> Action: WATCH
+----------------------------------------
+[The Block] Meta cuts to metaverse ‘black hole’ could free up billions for AI and lift shares by 20%: analysts
+   Sentiment: NEUTRAL -> Action: WATCH
+----------------------------------------
+[The Block] The Daily: JPMorgan says Strategy is key to bitcoin’s next move, IMF warns stablecoins may weaken central bank control, and more
+   Sentiment: BEARISH -> Action: CONSIDER SHORT
+----------------------------------------
+[Decrypt] Crypto Holiday Gift Guide 2025
+   Sentiment: BULLISH -> Action: CONSIDER LONG
+----------------------------------------
+[Decrypt] Professor Coin: When Bitcoin Sneezes—How Crypto and Equities Caught the Same Cold
+   Sentiment: NEUTRAL -> Action: WATCH
+----------------------------------------
+[Decrypt] New 'Postal' Game Canceled One Day After Reveal, Following Generative AI Allegations
+   Sentiment: NEUTRAL -> Action: WATCH
+----------------------------------------
+[Decrypt] Cantor Slashes Strategy Price Target By 59%, Remains 'Long-Term Bullish' on Bitcoin Giant
+   Sentiment: NEUTRAL -> Action: WATCH
+----------------------------------------
+[Decrypt] Bitcoin, Ethereum and XRP Dive as Liquidations Hit $500 Million—While Stocks Rise
+   Sentiment: BEARISH -> Action: CONSIDER SHORT
+----------------------------------------
+
+
+--- SOCIAL SENTIMENT (REDDIT/TWITTER) ---
+[Reddit (r/CC)] Strategy CEO says only a decades-long slump would force them to sell Bitcoin...
+   Sentiment: BEARISH
+[Reddit (r/CC)] Stranded at $90K, Rescued at $200K...
+   Sentiment: NEUTRAL
+[Reddit (r/CC)] 2,000 Bitcoin on the move: Rare Casascius coins awaken after 13 years...
+   Sentiment: NEUTRAL
+[Reddit (r/CC)] Japan’s rate lift threatens Bitcoin as yen carry trades begin to unwind...
+   Sentiment: NEUTRAL
+[Reddit (r/CC)] Japan's Rate Hike Could Reshape Bitcoin's Destiny...
+   Sentiment: NEUTRAL
+[Reddit (r/CC)] Peter Schiff challenges President Trump to debate, moves on Binance's CZ...
+   Sentiment: NEUTRAL
+[Reddit (r/CC)] Student 'tortured and burned alive by thieves for dad's cryptocurrency riches'...
+   Sentiment: NEUTRAL
+[Reddit (r/CC)] US prosecutors push for 12-year prison sentence for Terraform co-founder Do Kwon's role in $40 billi...
+   Sentiment: NEUTRAL
+[Social/News (Tavily)] Crypto World: latest crypto news and digital currency updates - CNBC...
+   Sentiment: NEUTRAL
+[Social/News (Tavily)] Latest Twitter News - Crypto News...
+   Sentiment: NEUTRAL
+[Social/News (Tavily)] "#CRYPTOCURRENCY" - Results on X | Live Posts & Updates...
+   Sentiment: NEUTRAL
+[Social/News (Tavily)] Crypto Twitter (X) | CoinDesk...
+   Sentiment: NEUTRAL
+[Social/News (Tavily)] CoinDesk: Bitcoin, Ethereum, XRP, Crypto News and Price Data...
+   Sentiment: NEUTRAL
+
+
+--- AGGREGATED TRADE IDEAS (HEURISTIC) ---
+Overall Market Sentiment: NEUTRAL
+Bullish Keywords: 6 | Bearish Keywords: 6
+
+>> TRADE IDEA: RANGE TRADE / WAIT
+   Rationale: Conflicting signals in market data.
