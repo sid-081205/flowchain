@@ -25,7 +25,7 @@ graph TD
     signer -->|signed tx| neo[neo n3 blockchain]
 ```
 
-### core components
+## 3. core components
 
 #### a. the spoonos guardian (backend)
 
@@ -56,60 +56,68 @@ we utilize **elevenlabs conversational ai** via websockets for sub-200ms latency
 
  * **the prediction software is detailed in greater depth in the prediction folder :)**
 
-  
-## 4. technology stack
 
-  * **agent runtime:** python 3.10+, spoonos sdk
-  * **voice processing:** elevenlabs python sdk (conversational agent)
-  * **blockchain:** neo-mamba (python sdk for neo), neo n3 testnet
-  * **wallet infrastructure:** turnkey api / local tee enclave signing
+## 4. setup
 
-## 5. installation & setup
+a. **clone and install dependencies**
 
-### prerequisites
+   ```bash
+   git clone https://github.com/your-team/flowchain.git
+   cd flowchain
+   pip install -r requirements.txt
+   ```
 
-  * python 3.10+
-  * spoonos cli installed (`pip install spoon-cli`)
-  * 
+b. **configure environment variables**
 
-### quick start
+   create a `.env` file in the root directory:
 
-1.  **clone the repository**
+   ```ini
+   # required
+   GEMINI_API_KEY=your_gemini_api_key
+   
+   # neo wallet
+   NEO_WIF=your_neo_private_key_wif
+   NEO_ADDRESS=your_neo_address
+   NEO_RPC_URL=https://testnet1.neo.coz.io:443
+   
+   # voice (optional)
+   ELEVENLABS_API_KEY=your_elevenlabs_key
+   ENABLE_VOICE=true
+   
+   # research tools (optional)
+   TAVILY_API_KEY=your_tavily_key
+   SANTIMENT_API_KEY=your_santiment_key
+   ```
 
-    ```bash
-    git clone https://github.com/your-team/flowchain.git
-    cd flowchain
-    ```
+c. **run the prediction pipeline** (generates trade recommendations)
 
-2.  **configure environment**
-    create a `.env` file based on `.env.example`:
+   ```bash
+   python3 prediction_model/run_pipeline.py
+   ```
 
-    ```ini
-    SPOON_API_KEY=sp_...
-    ELEVENLABS_API_KEY=xi_...
-    NEO_PRIVATE_KEY_WIF=...
-    COLD_STORAGE_ADDRESS=N...
-    ```
+d. **start the agent**
 
-3.  **initialize spoonos agent**
+   option a: cli mode
+   ```bash
+   python3 src/main.py
+   ```
 
-    ```bash
-    # registers the agent with the spoonos coordination layer
-    spoon-cli init --config agent_config.json
-    ```
+   option b: web interface with voice
+   ```bash
+   python3 run_server.py
+   ```
+   then open `http://localhost:8000` in your browser
 
-4.  **run the sentinel**
+### usage examples
 
-    ```bash
-    python src/main.py
-    ```
+once running, you can interact with flowchain:
 
-## 7. security considerations
+- *"what are my holdings?"* → shows real neo wallet balance
+- *"any trade recommendations?"* → reads from prediction model
+- *"what's happening with bitcoin?"* → web3 research analysis
+- *"what should i buy?"* → combines predictions with market datay the code running inside the enclave is the genuine, uncorrupted version of flowchain.
 
-  * **voice spoofing:** in a production environment, we would implement voice id verification to prevent unauthorized access via recording playback.
-  * **tee attestation:** we rely on spoonos's native remote attestation to verify the code running inside the enclave is the genuine, uncorrupted version of flowchain.
-
-## 8. hackathon tracks & alignment
+## 5. hackathon tracks & alignment
 
 ### 🤖 ai agent for web3
 fully autonomous agent performing on-chain writes (swaps/transfers) based on natural language reasoning. the spoonos guardian maintains session state, validates policies, and executes blockchain transactions via the turnkey wallet api—all triggered by voice commands.
@@ -128,7 +136,3 @@ deep integration of elevenlabs conversational ai via websockets for sub-200ms la
   * real-time speech-to-text for user commands
   * dynamic text-to-speech for execution confirmations and market summaries
   * context-aware tone adaptation—calm during market stability, urgent during volatility
-
------
-
-*built for the encode club x spoonos agentic hackathon 2025.*
