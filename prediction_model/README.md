@@ -8,7 +8,7 @@ the prediction_model acts as an intelligent trading engine for crypto assets. in
 
 ![pipeline architecture](pipeline.png)
 
-the system utilizes a convergent processing topology to synthesize heterogeneous market signals into deterministic execution directives.
+the system utilizes a convergent processing topology to synthesize heterogeneous market signals into clear trading recommendations
 
 ### 1. data ingestion layer
 parallel ingestion of high-fidelity market data streams:
