@@ -19,7 +19,7 @@ GAS_SCRIPT_HASH = "0xd2a4cff31913016155e38e474a2c06d08be276cf"
 
 # Get config values directly from environment
 NEO_WIF = os.getenv("NEO_WIF")
-NEO_ADDRESS = os.getenv("NEO_ADDRESS", "NgT5VoR2R5FdDBrEhmjj3TdarVW1tHVCy8")
+NEO_ADDRESS = os.getenv("NEO_ADDRESS", "")
 NEO_RPC_URL = os.getenv("NEO_RPC_URL", "https://testnet1.neo.coz.io:443")
 TURNKEY_SIGN_WITH = os.getenv("TURNKEY_SIGN_WITH")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")

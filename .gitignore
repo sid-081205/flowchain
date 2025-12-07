@@ -1,12 +1,43 @@
 
 # Environment variables
 .env
+.env.local
+.env.*
 
 # Python virtual environments
 .venv/
 venv/
 env/
+ENV/
 
 # Python bytecode
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Keys and Secrets
+*.key
+*.pem
+*.p12
+*.pfX
+*.asc
+*.gpg
+
+# Logs and DBs
+*.log
+*.sqlite
+*.db
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Dynamic/Generated files
+mock_wallet.json
+flowchain_trade_log.txt
+prediction_model/final_trade_plan.txt
+prediction_model/trade_signals_report.txt
+
+# Examples (contain potential secrets)
+examples/

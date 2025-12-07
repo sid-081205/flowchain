@@ -262,29 +262,7 @@ async def serve_frontend(path: str):
     
     return {"error": "File not found"}
 
-# --- DEMO SCRIPT DATA ---
-DEMO_SCRIPT = {
-    "status report": (
-        "Greetings. Systems online. Secure enclave active. How are you today? I am FlowChain, your high-frequency trading guardian.", 
-        "neutral"
-    ),
-    "situation": (
-        "Analysis complete. Your NEO position is stable at 100 tokens. However, I have detected a critical alert: Ethereum has dropped 5% in the last hour. Volatility is increasing.", 
-        "serious"
-    ),
-    "sentiment": (
-        "Market sentiment for NEO is bullish. On-chain volume is rising and technical indicators suggest a strong accumulation phase. It appears to be a safer allocation than Ethereum at this moment.", 
-        "happy"
-    ),
-    "protect": (
-        "Understood. I can execute a swap sequence or set a limit order. For immediate protection, I recommend shifting assets to NEO. Shall I proceed with the simulation?", 
-        "serious"
-    ),
-    "simulate": (
-        "Executing. Securing assets... Trade simulation complete. Your capital has been reallocated to NEO. Portfolio integrity maintained.", 
-        "happy"
-    )
-}
+
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -329,55 +307,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
                 msg_lower = content.lower()
 
-                # --- DEMO OVERRIDE CHECK ---
-                demo_response = None
-                demo_mood = "neutral"
-                
-                for trigger, (response_text, mood) in DEMO_SCRIPT.items():
-                    if trigger in msg_lower:
-                        print(f"[DEMO OVERRIDE] Trigger: '{trigger}' matched.")
-                        demo_response = response_text
-                        demo_mood = mood
-                        break
-                
-                # Fallback Demo Logic
-                if not demo_response:
-                    if any(x in msg_lower for x in ["check wallet", "balance", "portfolio", "holdings"]):
-                         demo_response = "Wallet Status: You hold 500 NEO. Portfolio is 100% NEO. \U0001F680 ALERT: Neo momentum is accelerating."
-                         demo_mood = "happy"
-                    elif "strategy" in msg_lower:
-                         demo_response = "Strategy: ACCUMULATE NEO. Sentiment is Euphoric (+9.2). Upside projected +45%."
-                         demo_mood = "happy"
-                    elif "execute" in msg_lower:
-                         demo_response = "Security Protocol Active. Confirming liquidity sources. Please verbalize the passkey phrase to authorize."
-                         demo_mood = "serious"
-                    elif "flowchain" in msg_lower:
-                         demo_response = "Passkey Verified. Buy Orders Filled. 500 NEO added to Governance Staking. Yield optimized."
-                         demo_mood = "happy"
 
-                if demo_response:
-                     response = demo_response
-                     # Send text
-                     await websocket.send_json({
-                        "type": "response",
-                        "message": response,
-                        "status": "speaking"
-                    })
-                     # Send Voice
-                     if config.ENABLE_VOICE and voice_assistant:
-                        audio_bytes = voice_assistant.generate_audio_bytes(response, mood=demo_mood)
-                        if audio_bytes:
-                            import base64
-                            audio_base64 = base64.b64encode(audio_bytes).decode('utf-8')
-                            await websocket.send_json({
-                                "type": "audio",
-                                "audio": audio_base64,
-                                "status": "ready"
-                            })
-                     else:
-                          await websocket.send_json({"type": "status", "status": "ready"})
-                     continue
-                # ---------------------------
 
                 # Normal Routing & Processing
                 try:
