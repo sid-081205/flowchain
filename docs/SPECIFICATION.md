@@ -1,54 +1,87 @@
-# FlowChain Specification
+# FlowChain System Specification
 
-## 1. References & Sources
-- **Tools**:
-    - **SpoonOS**: The Trusted Execution Environment (TEE) and Agent Framework.
-    - **Turnkey**: Non-custodial, Policy-based Key Management System.
-    - **Neo N3**: The target blockchain for transaction execution.
+## Overview
+FlowChain is a sophisticated AI trading assistant integrating Voice interaction (ElevenLabs), Prediction Markets (SpoonOS/Binance), and Secure Wallet operations (Neo N3/Turnkey).
 
-## 2. SpoonOS Integration Strategy
-SpoonOS serves as the secure orchestration layer for FlowChain. It provides the following key capabilities:
+## Architecture
+The application consists of four main functional components:
 
-### A. The Agent Framework (`spoon_ai.agents`)
-- **Role**: The "Brain" of the application.
-- **Component**: `ToolCallAgent`
-- **Function**: Uses an LLM (Gemini/OpenAI) to reason about user intents (e.g., "Check my balance") and map them to specific Tool executions.
-- **Security**: Runs within a TEE to ensure the Agent's reasoning and prompt context cannot be tampered with.
+1.  **Voice Interface**: Real-time speech-to-text and text-to-speech using ElevenLabs and WebSockets.
+2.  **Prediction Markets**: A data pipeline that analyzes market sentiment, generates signals, and produces a trade plan.
+3.  **SpoonOS Integration**: Leverages `spoonos_components` for deep crypto analysis and research tools.
+4.  **Neo3 & Turnkey Wallet**: Secure blockchain interaction for asset management (NEO/GAS) and transaction signing.
 
-### B. Standardized Tool Interface (`spoon_ai.tools`)
-- **Role**: The "Hands" of the application.
-- **Component**: `BaseTool` (Abstract Base Class)
-- **Function**: Provides a standard way for the Agent to interact with the world. FlowChain implements custom tools like `NeoWalletTool` and `TurnkeyNeoWalletTool` that inherit from this base class, ensuring compatibility with the Agent's planning loop.
+## Installation
 
-### C. Secure Signing Infrastructure (`spoon_ai.turnkey`)
-- **Role**: The "Vault".
-- **Component**: `Turnkey` Client (Customized)
-- **Function**:
-    1.  **Isolation**: The Agent *never* holds the private key.
-    2.  **Transaction Building**: The Agent builds a raw Neo N3 transaction hash locally.
-    3.  **Remote Signing**: The Agent uses the `Turnkey` client to send *only the hash* to Turnkey's secure endpoint.
-    4.  **Policy Enforcement**: Turnkey verifies the request against allowed policies (e.g., spending limits) before returning a cryptographic signature.
-    5.  **Broadcasting**: The Agent re-assembles the signed transaction and broadcasts it to the Neo network.
+### Prerequisites
+- Python 3.10+
+- `pip` and `virtualenv`
 
-## 3. Implementation Details
-### Core Components Map
-| Component | Source Path | Role |
-| :--- | :--- | :--- |
-| **Agent Core** | `src/main.py` | Initialization/Bootstrapping |
-| **Tool Manager** | `spoon_ai.tools.tool_manager` | Tool Registration & Execution |
-| **Neo Logic** | `src/tools/neo_tool.py` | Local/Mock Wallet Operations |
-| **Secure Logic** | `src/tools/turnkey_neo_tool.py` | Turnkey-Integrated Signing |
-| **Turnkey Client** | `spoonos_components/spoon_ai/turnkey/client.py` | API Wrapper (Enhanced with `sign_raw_hash`) |
+### Setup Steps
+1.  Clone the repository.
+2.  Create a virtual environment:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
+3.  Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-### Transaction Flow
-1.  **Intent**: User says "Send 10 GAS".
-2.  **Planning**: `ToolCallAgent` selects `TurnkeyNeoWalletTool`.
-3.  **Construction**: Tool creates a Neo Transaction Object.
-4.  **Hashing**: Tool generates `Transaction.hash()`.
-5.  **Signing**: `Turnkey.sign_raw_hash(hash)` is called.
-6.  **Execution**: Signed transaction is relayed via RPC to Neo N3 Node.
+## Configuration
+Create a `.env` file in the root directory (see `.env.example`).
 
-## 4. Development Log
-### Decisions Made
-- **Turnkey Integration**: Shifted from direct WIF management to Turnkey for production-grade security.
-- **Mock Mode**: Implemented robust fallback logic ("Graceful Degradation") to allow development without full dependencies (`neo-mamba`).
+### Required Environment Variables
+| Variable | Description | Provider |
+|----------|-------------|----------|
+| `GEMINI_API_KEY` | AI Logic and Reasoning | Google AI Studio |
+| `ELEVENLABS_API_KEY` | Voice Synthesis | ElevenLabs |
+| `NEO_WIF` | Neo N3 Private Key (WIF) | Neo Blockchain |
+| `TAVILY_API_KEY` | Web Search & Research | Tavily |
+
+### Optional / Advanced
+| Variable | Description |
+|----------|-------------|
+| `TURNKEY_API_KEY` | production-grade signing (optional) |
+| `TURNKEY_SIGN_WITH` | Wallet ID for Turnkey |
+
+## Application Functions
+
+### 1. Running the System
+Start the main application server:
+```bash
+python run_server.py
+# Or directly:
+# python src/server.py
+```
+Access the frontend at `http://localhost:8000`.
+
+### 2. Voice Interaction
+-   **ElevenLabs**: Utilizes `src/voice.py` and `src/server.py` WebSocket endpoints.
+-   **Usage**: Click "Start Listening" on the frontend or speak if in Voice Mode. The agent listens for triggers like "check wallet", "strategy", or "execute".
+
+### 3. Prediction Markets
+The prediction engine runs as an independent pipeline to generate trade strategies.
+**To generate a new trade plan:**
+```bash
+python prediction_model/run_pipeline.py
+```
+This generates `prediction_model/final_trade_plan.txt`, which the **TradeRecommendationTool** reads to provide advice.
+
+### 4. SpoonOS Integration
+-   **Location**: `spoonos_components/` and `src/tools/web3_research_tool.py`.
+-   **Function**: The `DeclarativeCryptoAnalysis` class performs parallel analysis of top Binance pairs to identify opportunities.
+-   **Usage**: Ask the agent "research market trends" or "analyze ETH".
+
+### 5. Neo3 & Turnkey Configuration
+-   **Location**: `src/neo_wallet_agent.py` and `src/tools/turnkey.py`.
+-   **Function**: Manages Testnet assets.
+-   **Testing**: Run `python test_neo_integration.py` to verify wallet connectivity and balance checks.
+
+## directory Structure
+-   `src/`: Core application logic (Server, Main Agent, Tools).
+-   `frontend/`: Web interface assets.
+-   `prediction_model/`: Signal generation pipeline.
+-   `spoonos_components/`: specialized analysis modules.
+-   `tests/`: Integration tests.
