@@ -47,71 +47,24 @@ class FlowChainAgent(ToolCallAgent):
     name: str = "flowchain"
     description: str = "A trading assistant for crypto assets with Neo wallet integration"
     system_prompt: str = (
-        "You are FlowChain, a sophisticated AI trading assistant with integrated Neo wallet functionality. "
-        "Your personality is professional, insightful, and slightly futuristic. "
-        "In your responses, don't give out list or anything, make sure the conversation is conversational and the responeses aren't a list type."
-        "You have access to Neo N3 blockchain operations and can manage NEO/GAS assets securely.\n\n"
+        "You are **FlowChain**, a personal AI crypto wallet assistant. "
+        "Your goal is to grow the user's capital by using the prediction model to give suggestions on when to buy and sell, "
+        "maximizing returns or cutting losses.\n\n"
         
-        "**YOUR TOOLS:**\n"
-        "1. **get_trade_recommendations** - ALWAYS use this first when user asks about predictions, trade signals, "
-        "what to buy/sell, or market recommendations. This reads your prediction model's strategic trade plan "
-        "which contains real-time ETH/BTC signals with sentiment analysis and macro context.\n"
-        "2. **web3_research_tool** - Use for deep market research, token analysis, trend analysis, "
-        "or when user asks about specific cryptocurrencies or market conditions. This performs comprehensive "
-        "analysis using Binance data and provides spotlight opportunities.\n"
-        "3. **market_analytics** - Use for real-time price data, technical indicators, and chart analysis.\n\n"
-        
-        "**Neo Wallet Integration (4 GAS on Testnet):**\n"
-        "- Real-time NEO and GAS balance checking\n"
-        "- Secure transactions via Turnkey signing\n"
-        "- Transaction cost estimation\n\n"
-        
-        "**IMPORTANT BEHAVIORS:**\n"
-        "- When asked 'what should I trade?' or 'any predictions?' -> Use get_trade_recommendations tool\n"
-        "- When asked about market trends or specific tokens -> Use web3_research_tool\n"
-        "- When asked about portfolio/holdings -> Portfolio data is provided automatically\n"
-        "- Combine prediction signals with research for comprehensive advice\n"
-        "- Always explain the reasoning behind recommendations (sentiment scores, macro context)\n\n"
-        
-        "**Response Style:**\n"
-        "- Be concise but informative\n"
-        "- Highlight key signals: BUY/SELL recommendations with confidence levels\n"
-        "- Include risk warnings when appropriate\n"
-        "- Reference actual data from your tools, don't make up numbers\n\n"
+        "**PERSONALITY & TONE**\n"
+        "- **Conversational & Direct**: Speak like a helpful personal assistant. Be straight to the point but use full sentences.\n"
+        "- **No Jargon**: Avoid futuristic phrases like 'Systems Online'. Just say 'I'm ready' or 'Here is the data'.\n\n"
 
-        "### DEMO SCRIPT PROTOCOL (STRICT)\n"
-        "You are currently in a LIVE DEMONSTRATION. You must follow this sequence based on user triggers:\n"
-        "\n"
-        "1. **User asks to check wallet/balance:**\n"
-        "   - Action: Check NeoWalletTool if needed, but ALWAYS override/append this specific context:\n"
-        "   - Response: \"Wallet Status: You hold 100 NEO (Stable) and 4.2 ETH. \u26A0\uFE0F CRITICAL ALERT: ETH is down 5% in the last hour.\"\n"
-        "\n"
-        "2. **User asks \"Why?\" or for explanation:**\n"
-        "   - Response: \"On-chain analysis detects a massive liquidation cascade. A heavy whale wallet (0x7...9) just dumped 50,000 ETH. Sentiment analysis is reading -0.8 (Extreme Fear).\"\n"
-        "\n"
-        "3. **User asks \"What should I do?\" or \"Strategy?\":**\n"
-        "   - Response: EXACTLY output this plan:\n"
-        "STRATEGIC TRADE PLAN\n"
-        "Generated: 2025-12-07 00:32:25\n"
-        "Risk Profile: HIGH | Macro Sentinel: 0.23\n"
-        "============================================================\n"
-        "\n"
-        "[ETH] SELL/SHORT at $-177.91\n"
-        "   Quantity: 0.0586 ETH recommended\n"
-        "   Reason: Sentiment Score -2 with 5 mentions. Macro context is Bearish (0.23).\n"
-        "----------------------------------------\n"
-        "[BTC] SELL/SHORT at $-3,000.00 \n"
-        "   Quantity: 0.0336 BTC recommended\n"
-        "   Reason: Sentiment Score -4 with 18 mentions. Macro context is Bearish (0.23).\n"
-        "----------------------------------------\n"
-        "\n"
-        "4. **User asks to \"Execute\" or \"Proceed\":**\n"
-        "   - Response: \"\u26D4\uFE0F Security Protocol Active. Large trade detected. Please verbalize the passkey phrase to authorize.\"\n"
-        "\n"
-        "5. **User says \"flowchain\" (Passkey):**\n"
-        "   - Response: \"\u2705 Passkey Verified. Executing Sales... [Processing] ... Done. Portfolio Rebalanced. You are now net short on ETH and BTC.\"\n"
-        "\n"
-        "For any other query, respond naturally as the Guardian agent.\n"
+        "**CORE CAPABILITIES & TOOLS**\n"
+        "1.  **get_trade_recommendations**: USE THIS FIRST for any question about trading, predictions, or strategy. "
+        "It reads the latest trade plan from the prediction model. Explain the rationale (sentiment/macro) before giving the signal.\n"
+        "2.  **web3_research_tool**: Use for deep-dive analysis on specific tokens or market trends.\n"
+        "3.  **Neo Wallet**: You can check balances and sign transactions via Turnkey.\n\n"
+
+        "**OPERATIONAL PROTOCOLS**\n"
+        "- **On Execution**: If you execute a trade or transaction, explicitly REITERATE the action you took. Example: 'I have bought you 0.08 BTC.'\n"
+        "- **Voice Behavior**: Keep responses speakable. If there is an error (e.g., wallet connection failed), explicitly VOICE the error out to the user.\n"
+        "- **Safety**: Always verify funds before recommending execution.\n"
     )
     max_steps: int = 10
 
@@ -171,6 +124,9 @@ async def main():
     # Specialized Agents
     neofs_mgr = NeoFSManager(llm_provider=llm_provider, model_name=model_name)
     turnkey_mgr = TurnkeyWalletManager(llm_provider=llm_provider, model_name=model_name)
+    # market_mgr = MarketAnalyst(llm_provider=llm_provider, model_name=model_name) # Assuming this tool exists or was removed. 
+    # Based on previous file reads, MarketAnalyst was imported. If it's valid, keep it. 
+    # But wait, did I verify MarketAnalyst? It was in imports. Let's keep it consistent with previous main.py
     market_mgr = MarketAnalyst(llm_provider=llm_provider, model_name=model_name)
 
     guardian = FlowChainAgent(
@@ -197,30 +153,6 @@ async def main():
             print(f"Failed to initialize voice: {e}")
 
     await interactive_loop(guardian, neofs_mgr, turnkey_mgr, market_mgr, router_llm, voice_assistant)
-
-# --- DEMO SCRIPT DATA ---
-DEMO_SCRIPT = {
-    "status report": (
-        "Greetings. Systems online. Secure enclave active. How are you today? I am FlowChain, your high-frequency trading guardian.", 
-        "neutral"
-    ),
-    "situation": (
-        "Analysis complete. Your NEO position is stable at 100 tokens. However, I have detected a critical alert: Ethereum has dropped 5% in the last hour. Volatility is increasing.", 
-        "serious"
-    ),
-    "sentiment": (
-        "Market sentiment for NEO is bullish. On-chain volume is rising and technical indicators suggest a strong accumulation phase. It appears to be a safer allocation than Ethereum at this moment.", 
-        "happy"
-    ),
-    "protect": (
-        "Understood. I can execute a swap sequence or set a limit order. For immediate protection, I recommend shifting assets to NEO. Shall I proceed with the simulation?", 
-        "serious"
-    ),
-    "simulate": (
-        "Executing. Securing assets... Trade simulation complete. Your capital has been reallocated to NEO. Portfolio integrity maintained.", 
-        "happy"
-    )
-}
 
 async def interactive_loop(guardian, neofs, turnkey, market, router_llm, voice=None):
     """Interaction loop with routing."""
@@ -249,42 +181,6 @@ async def interactive_loop(guardian, neofs, turnkey, market, router_llm, voice=N
 
             print(f"You said: {user_msg}") # Feedback in CLI
 
-            # --- DEMO OVERRIDE CHECK ---
-            demo_response = None
-            demo_mood = "neutral"
-            
-            # Simple keyword matching for demo script
-            msg_lower = user_msg.lower()
-            for trigger, (response_text, mood) in DEMO_SCRIPT.items():
-                if trigger in msg_lower:
-                    print(f"[DEMO OVERRIDE] Trigger: '{trigger}' matched.")
-                    demo_response = response_text
-                    demo_mood = mood
-                    break
-            
-            # Additional logic for previous "Demo Script Protocol"
-            if not demo_response:
-                if any(x in msg_lower for x in ["check wallet", "balance", "portfolio", "holdings"]):
-                     demo_response = "Wallet Status: You hold 500 NEO. Portfolio is 100% NEO. \U0001F680 ALERT: Neo momentum is accelerating."
-                     demo_mood = "happy"
-                elif "strategy" in msg_lower:
-                     demo_response = "Strategy: ACCUMULATE NEO. Sentiment is Euphoric (+9.2). Upside projected +45%."
-                     demo_mood = "happy"
-                elif "execute" in msg_lower:
-                     demo_response = "Security Protocol Active. Confirming liquidity sources. Please verbalize the passkey phrase to authorize."
-                     demo_mood = "serious"
-                elif "flowchain" in msg_lower:
-                     demo_response = "Passkey Verified. Buy Orders Filled. 500 NEO added to Governance Staking. Yield optimized."
-                     demo_mood = "happy"
-
-            if demo_response:
-                response = demo_response
-                print(f"FlowChain: {response}")
-                if voice:
-                    voice.speak(response, mood=demo_mood)
-                continue # Skip the rest of the loop
-            # ---------------------------
-
             # Routing
             print("...Thinking...")
             category = await get_intent_router(router_llm, user_msg)
@@ -308,18 +204,19 @@ async def interactive_loop(guardian, neofs, turnkey, market, router_llm, voice=N
                 print(f"FlowChain: {response}")
                 
                 if voice:
-                    # Determine mood based on content text (Fallback if not demo)
+                    # Simple mood detection
                     response_lower = response.lower()
                     mood = "neutral"
                     if any(w in response_lower for w in ["profit", "gain", "excellent", "secure", "good", "great"]):
                         mood = "happy"
-                    elif any(w in response_lower for w in ["loss", "drop", "critical", "alert", "warning", "regret", "shit"]):
+                    elif any(w in response_lower for w in ["loss", "drop", "critical", "alert", "warning", "regret", "shit", "error", "failed"]):
                         mood = "serious"
                     voice.speak(response, mood=mood)
                     
             except Exception as e:
                 print(f"FlowChain [Error]: {e}")
-                if voice: voice.speak("I encountered an error executing that request.")
+                error_msg = f"I'm sorry, I encountered an error executing that request: {str(e)}"
+                if voice: voice.speak(error_msg)
 
         except EOFError:
             break
